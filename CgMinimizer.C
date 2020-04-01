@@ -26,11 +26,6 @@ void CgMinimizer()
   TMatrixD x(2,1);
   TMatrixD g0(2,1);
   TMatrixD g(2,1);
-  
-  
-  
-  
-	
 	
 	
 	

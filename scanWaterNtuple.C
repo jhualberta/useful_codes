@@ -8,10 +8,10 @@
 //3705<z_AV<4500
 
 
-void scanNtuple(const char*fname)
+void scanWaterNtuple(const char*fname)
 {
   TFile *_file0=TFile::Open(fname);
-  TTree *output = (TTree*)_file0->Get("output");
+  TTree *output = (TTree*)_file0->Get("T");
   TH2F *hRZ = new TH2F("hRZ","",1000,0,9000,1000,3000,9000);
   TH1F *hnhits = new TH1F("hnhits","nhits at interface",1000,0,2000);
   TH1F *hnhits_interface = new TH1F("hnhits_interface","nhits at interface",1000,0,2000);	  
@@ -28,25 +28,25 @@ void scanNtuple(const char*fname)
   TH1F *htrigWord_av = new TH1F("htrigWord_av","trigWord at AV",100,0,10);
   TH1F *htrigWord_boundary = new TH1F("htrigWord_boundary","trigWord at boundary",100,0,100);
 
-  output->Project("hRZ","(posz-108):sqrt(posx**2+posy**2)","");
+  output->Project("hRZ","(posZcor-108):sqrt(posXcor**2+posYcor**2)","");
   gStyle->SetPalette(81);
-  TH2F* hZrho = new TH2F("hZrho","",1000,0,1,1000,3000,9000);
-  output->Project("hZrho","(posz-108):sqrt(posx**2+posy**2)/6000","");
+  TH2F* hZrho = new TH2F("hZrho","",1000,0,9000,2000,-9000,9000);
+  output->Project("hZrho","(posZcor-108):sqrt(posXcor**2+posYcor**2)","fecd==9188");
 
   output->Project("hnhits","nhits","nhits>0");
-  output->Project("hnhits_interface","nhits","nhits>0 && posz<4450 && posz>4425");
-  output->Project("hnhits_av","nhits","nhits>0 && sqrt(posx**2+posy**2+posz**2)<6005 && sqrt(posx**2+posy**2+posz**2)>5999");
-  output->Project("hnhits_boundary","nhits","nhits>0 && sqrt(posx**2+posy**2+posz**2)<6005 && sqrt(posx**2+posy**2+posz**2)>5999 || (posz<4450 && posz>4425)");
+  output->Project("hnhits_interface","nhits","nhits>0 && posZcor<4450 && posZcor>4425");
+  output->Project("hnhits_av","nhits","nhits>0 && sqrt(posXcor**2+posYcor**2+posZcor**2)<6005 && sqrt(posXcor**2+posYcor**2+posZcor**2)>5999");
+  output->Project("hnhits_boundary","nhits","nhits>0 && sqrt(posXcor**2+posYcor**2+posZcor**2)<6005 && sqrt(posXcor**2+posYcor**2+posZcor**2)>5999 || (posZcor<4450 && posZcor>4425)");
 
-  output->Project("hmcEdep","mcEdep","mcEdep>0");
-  output->Project("hmcEdep_interface","mcEdep","posz<4450 && posz>4425");
-  output->Project("hmcEdep_av","mcEdep","sqrt(posx**2+posy**2+posz**2)<6005 && sqrt(posx**2+posy**2+posz**2)>5999");
-  output->Project("hmcEdep_boundary","mcEdep","sqrt(posx**2+posy**2+posz**2)<6005 && sqrt(posx**2+posy**2+posz**2)>5999 || (posz<4450 && posz>4425)");
+  //output->Project("hmcEdep","mcEdep","mcEdep>0");
+  //output->Project("hmcEdep_interface","mcEdep","posZcor<4450 && posZcor>4425");
+  //output->Project("hmcEdep_av","mcEdep","sqrt(posXcor**2+posYcor**2+posZcor**2)<6005 && sqrt(posXcor**2+posYcor**2+posZcor**2)>5999");
+  //output->Project("hmcEdep_boundary","mcEdep","sqrt(posXcor**2+posYcor**2+posZcor**2)<6005 && sqrt(posXcor**2+posYcor**2+posZcor**2)>5999 || (posZcor<4450 && posZcor>4425)");
 
-  output->Project("htrigWord","triggerWord","");
-  output->Project("htrigWord_interface","triggerWord","posz<4450 && posz>4425");
-  output->Project("htrigWord_av","triggerWord","sqrt(posx**2+posy**2+posz**2)<6005 && sqrt(posx**2+posy**2+posz**2)>5999");
-  output->Project("htrigWord_boundary","triggerWord","sqrt(posx**2+posy**2+posz**2)<6005 && sqrt(posx**2+posy**2+posz**2)>5999 || (posz<4450 && posz>4425)");
+  //output->Project("htrigWord","triggerWord","");
+  //output->Project("htrigWord_interface","triggerWord","posZcor<4450 && posZcor>4425");
+  //output->Project("htrigWord_av","triggerWord","sqrt(posXcor**2+posYcor**2+posZcor**2)<6005 && sqrt(posXcor**2+posYcor**2+posZcor**2)>5999");
+  //output->Project("htrigWord_boundary","triggerWord","sqrt(posXcor**2+posYcor**2+posZcor**2)<6005 && sqrt(posXcor**2+posYcor**2+posZcor**2)>5999 || (posZcor<4450 && posZcor>4425)");
 
   hZrho->Draw("colz");
   TString fileName(fname);

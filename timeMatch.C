@@ -14,13 +14,18 @@
 //using namespace::std;
 //void timeMatch()
 {
-  //TFile *f1 = new TFile("dump_ch0_3DpieceOnly_2ChRead_1PMT_coin_2200V_0.root");
-  //TFile *f2 = new TFile("dump_ch1_3DpieceOnly_2ChRead_1PMT_coin_2200V_0.root");
+  TString nameSample;
+  std::cout<<"Put the name of sample"<<std::endl;
+  std::cin>>nameSample;
+  TString f1name(nameSample);
+  TString f2name(nameSample);
+  f1name = "data_ch0_"+nameSample+".root";
+  f2name = "data_ch1_"+nameSample+".root";
 
-  TFile *f1 = new TFile("data_ch0_TeSOP_137Cs_2PMTcoin_2200V_thresh100_1min_csv_25Mar.root");
-  TFile *f2 = new TFile("data_ch1_TeSOP_137Cs_2PMTcoin_2200V_thresh100_1min_csv_25Mar.root");
+  TFile *f1 = new TFile(f1name);
+  TFile *f2 = new TFile(f2name);
 //  TFile *ft = new TFile("ftree.root","recreate");
-  double coinwin = 10; 
+  double coinwin = 100; 
   int bin = 1000; // 8192
   TH2F *e2d = new TH2F("e2d","",bin, 0, bin, bin,0,bin);
 
@@ -34,7 +39,7 @@
   t1->SetBranchAddress("energy",&e1);
   t2->SetBranchAddress("energy",&e2);
 
-  int adcCh = 8192;
+  int adcCh = 1000;
   TH1F *heshort_0 = new TH1F("heshort_0","eshort, ch0",adcCh, 0, adcCh);
   TH1F *heshort_1 = new TH1F("heshort_1","eshort, ch1",adcCh, 0, adcCh);
   
@@ -175,16 +180,21 @@
 //    new_bins[j] = 26./22*heshort_1->GetBinLowEdge(j+1);
 //    //cout<<new_bins[j]<<", ";
 //  }
-
-  hch1_scaled->SetBins(nbins, new_bins);
+  //hch1_scaled->SetBins(nbins, new_bins);
   hch1_scaled->SetLineColor(kBlue);
-
+  cout<<" is OK here?"<<endl;
   TFile *ff = new TFile("plots_caen_coin.root","recreate");
   ff->cd();
   e2d->Write();
   TH1D *hch0proj = e2d->ProjectionX();
   TH1D *hch1proj = e2d->ProjectionY();
   hch0proj->Write();hch1proj->Write();
+
+  e2d_cor->Write();
+  TH1D *hch0projCor = e2d_cor->ProjectionX();
+  TH1D *hch1projCor = e2d_cor->ProjectionY();
+  hch0projCor->Write();hch1projCor->Write();
+
   ff->Close();
 
   TCanvas c0("c0","",800,600);

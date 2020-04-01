@@ -25,7 +25,7 @@ Int_t npeaks = 4;
 Int_t recordLength = 252;
 Int_t adcChannel = 8192;
 double attenu = 0.75;//25%
-int shortgate[2] = {32,82};// tune parameters
+int shortgate[2] = {32,70};// tune parameters
 int gatetime = shortgate[1] - shortgate[0];
 int pregate = 8;
 int delayW = 1; // 1 ns for DT5751
@@ -65,7 +65,10 @@ double calcuEnergy(TH1F* hwf, double baseline)
 }
 
 void processWaveform() {
-   TString fileName("TeSOP_137Cs_2PMTcoin_2200V_thresh100_1min_csv_25Mar");
+   cout<<"Which sample? "<<endl;
+   TString sss;
+   cin>>sss;   
+   TString fileName(sss);
 
    TString datafileCh0 = "data_ch0_"+ fileName + ".root";
    TFile *fdataCh0 = new TFile(datafileCh0);

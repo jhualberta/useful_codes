@@ -17,7 +17,7 @@
   //TFile *f1 = new TFile("dump_ch0_3DpieceOnly_2ChRead_1PMT_coin_2200V_0.root");
   //TFile *f2 = new TFile("dump_ch1_3DpieceOnly_2ChRead_1PMT_coin_2200V_0.root");
 
-  TFile *f1 = new TFile("Processed_TeSOP_137Cs_2PMTcoin_2200V_thresh100_1min_csv_25Mar.root");
+  TFile *f1 = new TFile("Processed_DistilledMarLabPPO_26Aug2019_attenu_coin40.root");
 //  TFile *ft = new TFile("ftree.root","recreate");
   double coinwin = 10; 
   int bin = 1000; // 8192
@@ -180,7 +180,7 @@
 
   TFile *ff = new TFile("plots_waveformCalcu_coin.root","recreate");
   ff->cd();
-  e2d_cor->Write();
+  e2d->Write();
   TH1D *hch0proj = e2d->ProjectionX();
   TH1D *hch1proj = e2d->ProjectionY();
   hch0proj->Write();hch1proj->Write();
