@@ -34,11 +34,12 @@ void AnalysisKarin()
    RAT::DU::LightPathCalculator lightPathMC = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
 
    // TVector3 srcPos(-1120.8,1041.4,6172.5);// For N16 r251748
-   TVector3 srcPos(-1120.8, 1041.4, 6108.0);
+   //TVector3 srcPos(-1120.8, 1041.4, 6108.0-108);
+   TVector3 srcPos(-1120, 1041, 6027-108); 
 
    ifstream in0, in1;
    //ostringstream oss;
-   in0.open("test1.dat");
+   in0.open("files1.dat");
    TTree *tree= new TTree("gOutput","16N");
   
    TVector3 gFitPosition;
@@ -61,7 +62,7 @@ void AnalysisKarin()
    std::vector<UInt_t> *gFECD;// = new std::vector<UInt_t>;//fecdID saved in vector, for one event fecd can be multi-values
   
    /// timeRes
-   double cosTheta = 0;
+   std::vector<double> *cosPMT;
    std::vector<double> *gPMTTrueTime;// = new std::vector<double>;
    std::vector<double> *gPMTRecoTime;// = new std::vector<double>;
   
@@ -86,7 +87,7 @@ void AnalysisKarin()
    //tree->Branch("gTrueDirection",&gTrueDirection);
    tree->Branch("gSolarDirection",&gSolarDirection);
    /// double values
-   tree->Branch("cosTheta", &cosTheta);
+   tree->Branch("cosPMT", &cosPMT);
    tree->Branch("gFitTime",&gFitTime);
    tree->Branch("gFecdTime",&gFecdTime);
    tree->Branch("gTrueEnergy",&gTrueEnergy);
@@ -130,6 +131,7 @@ void AnalysisKarin()
       gPMTRecoTime->clear();gFECD->clear();
       gQhs->clear();gQhl->clear();
       gPMTX->clear();gPMTY->clear();gPMTZ->clear();
+      cosPMT->clear(); 
     
       size_t iEVCount = rDS.GetEVCount(); // Number of triggered events in this MC event
       // ULong64_t dcAnalysisWord = RAT::GetDataCleaningWord( "analysis_mask" );
@@ -168,6 +170,8 @@ void AnalysisKarin()
                     evtNum = iEntry;
                     trig = ev.GetTrigType(); 
 		    gFitPosition = fVertex.GetPosition();
+		    ///!!!  AV correction
+		    gFitPosition.SetZ(fVertex.GetPosition().Z()-108);
                     gFitEnergy = 0;//fVertex.GetEnergy();
 	            gFitTime = fVertex.GetTime();
                     gNhitClean = ev.GetNhitsCleaned();
@@ -187,7 +191,7 @@ void AnalysisKarin()
 		       // if(fecd == 9188) 
 		       gFecdTime= calpmts.GetFECDPMT(ipmt).GetTime();
 		    }
-		    TVector3 srcToFitPos(gFitPosition.X() - srcPos.X(), gFitPosition.Y() - srcPos.Y(), (gFitPosition.Z()-108) - srcPos.Z());
+		    TVector3 srcToFitPos( gFitPosition.X() - srcPos.X(), gFitPosition.Y() - srcPos.Y(), gFitPosition.Z()-srcPos.Z() );
                     distSrcToFitPos = srcToFitPos.Mag();
 		    for(unsigned int ipmt=0;ipmt<calpmts.GetCount();ipmt++)
                     {
@@ -211,8 +215,9 @@ void AnalysisKarin()
 		       double qhl = calpmts.GetPMT(ipmt).GetQHL();
                        gQhs->push_back(qhs);
                        gQhl->push_back(qhl);
-		       cosTheta = (pmtpos - gFitPosition).Unit()*srcToFitPos.Unit();
-	     	  /// !!! for MC
+		       double cosTheta = (pmtpos - gFitPosition).Unit()*srcToFitPos.Unit();
+                       cosPMT->push_back(cosTheta);
+     		       /// !!! for MC
                        //lightPathMC.CalcByPositionPartial( gTruePosition, pmtpos );
                        //double distMCInInnerAV = lightPathMC.GetDistInInnerAV();
                        //double distMCInAV = lightPathMC.GetDistInAV();

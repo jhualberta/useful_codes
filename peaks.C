@@ -36,7 +36,7 @@ Double_t fpeaks(Double_t *x, Double_t *par) {
    return result;
 }
 
-void peaks(){
+void peaks() {
     TFile *ff = new TFile("Merged_Fit_100934.root","read");
 	
     TH2F *htResVsPMTposx = (TH2F*)ff->Get("htResVsPMTposx");

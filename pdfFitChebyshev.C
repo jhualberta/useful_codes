@@ -1,0 +1,50 @@
+#include "TF1.h"
+#include "TH1.h"
+#include "TFile.h"
+#include <vector>
+
+
+class Chebyshev {
+public: 
+   Chebyshev(int n, double xmin, double xmax) : 
+      fA(xmin), fB(xmax),
+      fT(std::vector<double>(n) )  {}
+
+   double operator() (const double * xx, const double *p) { 
+      double x = (xx[0] - fA -fB)/(fB-fA);
+      int order = fT.size(); 
+      if (order == 1) return p[0]; 
+      if (order == 2) return p[0] + x*p[1]; 
+      // build the polynomials
+      fT[0] = 1;
+      fT[1] = x; 
+      for (int i = 1; i< order; ++i) { 
+         fT[i+1] =  2 *x * fT[i] - fT[i-1]; 
+      }
+      double sum = p[0]*fT[0]; 
+      for (int i = 1; i<= order; ++i) { 
+         sum += p[i] * fT[i]; 
+      }
+      return sum; 
+   }
+
+private: 
+   double fA; 
+   double fB; 
+   std::vector<double> fT; // polynomial
+   std::vector<double> fC; // coefficients
+};
+
+
+void pdfFitChebyshev() { 
+   TFile *ff = new TFile("pdf_MPscint.root");
+   TH1F * h1 = (TH1F*)ff->Get("h1");
+   h1->Rebin(4);
+   h1->Scale(1./h1->Integral());
+   double xmin = 0; double xmax = 10;
+   double n = 100;
+   Chebyshev * cheb = new Chebyshev(n,xmin,xmax);
+   TF1 * f1 = new TF1("f1",cheb,xmin,xmax,n+1,"Chebyshev");
+   for (int i = 0; i <=n; ++i) f1->SetParameter(i,1);
+   h1->Fit(f1); 
+}

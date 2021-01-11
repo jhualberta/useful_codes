@@ -19,13 +19,8 @@
 #include <iostream>
 #include <stdlib.h> 
 #include <string>
-//
-//
-//
-//
-//((triggerWord & 0x401400) == 0x0) && (triggerWord != 0x40)
-// (((dcApplied & 0xFB0000017FFE) & dcFlagged) == (dcApplied & 0xFB0000017FFE))
-void AnalysisSolarWater()
+
+void AnalysisSolar()
 {
   
   ifstream in0, in1;
@@ -34,7 +29,7 @@ void AnalysisSolarWater()
   
   ostringstream oss;
   
-  in0.open("f1.dat");
+  in0.open("files1.dat");
   
   // Define all of the histograms and ntuples that are to be made  
   TH1D* radius = new TH1D( "radius", "Radius of all triggered events", 100, 0., 15000.);
@@ -51,10 +46,10 @@ void AnalysisSolarWater()
   
   TTree *tree= new TTree("T","SolarNu");
   
-  double posX, posY, posZ, posRad, time, energy, ITR, beta14, dirX, dirY, dirZ, Nhits, sunDirX, sunDirY, sunDirZ, cosThetaToSun, itr, iso;
+  double posX, posY, posZ, posRad, time, energy, ITR, beta14, dirX, dirY, dirZ, Nhits, sunDirX, sunDirY, sunDirZ, cosThetaToSun, itr, iso ;
   
   UInt_t day, sec, runNumber, eventGTID;
-  double nsecs;
+  double nsecs ;
   
   tree->Branch("posX",&posX,"posX/D");
   tree->Branch("posY",&posY,"posY/D");
@@ -80,12 +75,12 @@ void AnalysisSolarWater()
   char filenames[1500];
   
   Int_t i=0;
-  Int_t triggerWord;
+  Int_t TriggerType ;
   Int_t nentries=0;
-  ULong64_t bitword;
+  ULong64_t bitword ;
   
   while(in0>>filenames){
-    cout<<" filenames "<<filenames<<endl;
+    cout<<" filenames "<<filenames<<endl ;
     // Load the RAT file
     RAT::DU::DSReader dsReader( filenames);
     
@@ -97,10 +92,10 @@ void AnalysisSolarWater()
     // Loop over all of the events
     for(size_t iEntry = iEntry = 0; iEntry < dsReader.GetEntryCount(); iEntry++ )
       {
-	posX=-10000, posY=-10000, posZ=-10000, posRad=-10000, time=99999, energy=0, ITR=-2, beta14=-10, dirX=-2.0, dirY=-2.0, dirZ=-2.0, Nhits=0, sunDirX=0.0, sunDirY=0.0, sunDirZ=0.0, cosThetaToSun=-2.0, itr=-2, iso=-10;
+	posX=-10000, posY=-10000, posZ=-10000, posRad=-10000, time=99999, energy=0, ITR=-2, beta14=-10, dirX=-2.0, dirY=-2.0, dirZ=-2.0, Nhits=0, sunDirX=0.0, sunDirY=0.0, sunDirZ=0.0, cosThetaToSun=-2.0, itr=-2, iso=-10 ;
 	
         day=0, sec=0, runNumber=0, eventGTID=0;
-        nsecs=0;	
+        nsecs=0 ;	
 	const RAT::DS::Entry& rDS = dsReader.GetEntry( iEntry ); // ds for each event
    	// const RAT::DS::MC& mc = rDS.GetMC(); // MC branch for each event 
 	
@@ -122,18 +117,18 @@ void AnalysisSolarWater()
 	      runNumber = run.GetRunID();
 	      eventGTID = ev.GetGTID();
 	      RAT::DS::DataQCFlags dcflags = ev.GetDataCleaningFlags();
-              if( RAT::EventIsClean( ev, dcAnalysisWord ))// && dcflags && dcAnalysisWord ==  0xFB0000017FFE )
+              if( RAT::EventIsClean( ev, dcAnalysisWord ) )
 		{
-		  //cout<< " iEntry "<<iEntry<<" GTID "<<eventGTID<<" Applied bits "<< dcflags.GetApplied( dcflags.GetLatestPass() ).ToString() <<" bits flagged "<<dcflags.GetFlags( dcflags.GetLatestPass() ).ToString()<<endl;
+		  //cout<< " iEntry "<<iEntry<<" GTID "<<eventGTID<<" Applied bits "<< dcflags.GetApplied( dcflags.GetLatestPass() ).ToString() <<" bits flagged "<<dcflags.GetFlags( dcflags.GetLatestPass() ).ToString()<<endl ;
 		  
 		  //if bitword==dcflags.GetFlags( dcflags.GetLatestPass() ).ToString())
 		  // Fill the nHit histogram, all events should have nHit
 		  Float_t nHitOfEvent = ev.GetNhitsCleaned();
 		  //nHit->Fill(nHitOfEvent);
-		  Nhits= nHitOfEvent;
+		  Nhits= nHitOfEvent ;
 		  
-		  triggerWord = ev.GetTrigType();
-		  //cout<<" TriggerType "<<triggerWord<<endl;
+		  TriggerType = ev.GetTrigType() ;
+		  //cout<<" TriggerType "<<TriggerType<<endl ;
 		  
 		  // Now get the radius, if applicable
 		  Double_t radiusOfEvent = -1.;
@@ -141,16 +136,15 @@ void AnalysisSolarWater()
 		  bool directionFlag = false;
 		  TVector3 directionOfEvent;
 		  const string fitName = "waterFitter";
-		  //if(  ((TriggerType&2)==2) || ((TriggerType&18)==18)   )
-                  if( ((triggerWord & 0x401400) == 0x0) && (triggerWord != 0x40) )
-		  {
+		  if(((TriggerType&2)==2) || ((TriggerType&18)==18))
+		    {
 		      if( ev.FitResultExists(fitName) ) {  // It needs to exist 
 			
 			if( ev.GetFitResult(fitName).GetVertex(0).ContainsPosition() ) { // Needs to contain position
 			  if( ev.GetFitResult(fitName).GetVertex(0).ValidPosition() ) { // Needs a valid position
 			    
 			    RAT::DS::FitResult fResult = ev.GetFitResult(fitName);     // Get fit result
-			    if(fResult.GetValid()) { //cout<< " Fit is Valid "<<endl;
+			    if(fResult.GetValid()) { //cout<< " Fit is Valid "<<endl ;
 			      RAT::DS::FitVertex fVertex = fResult.GetVertex(0);          // Get first fit vertex
 			      positionOfEvent = fVertex.GetPosition();
 			      time = fVertex.GetTime();
@@ -158,7 +152,7 @@ void AnalysisSolarWater()
 			      posX = positionOfEvent.X();
 			      posY = positionOfEvent.Y();
 			      posZ = positionOfEvent.Z();
-			      posRad = radiusOfEvent;
+			      posRad = radiusOfEvent ;
 			      radius->Fill(radiusOfEvent);
 			    }
 			  } // end of loop if valid position
@@ -168,8 +162,7 @@ void AnalysisSolarWater()
 			  if( ev.GetFitResult(fitName).GetVertex(0).ValidDirection() ) { // Needs a valid direction
 			    
 			    RAT::DS::FitResult fResult = ev.GetFitResult(fitName);     // Get fit result
-			    if(fResult.GetValid()) { 
-                              //cout<< " Fit is Valid "<<endl;
+			    if(fResult.GetValid()) { //cout<< " Fit is Valid "<<endl ;
 			      RAT::DS::FitVertex fVertex = fResult.GetVertex(0);          // Get first fit vertex
 			      directionOfEvent = fVertex.GetDirection();
 			      dirX = directionOfEvent.X();
@@ -183,23 +176,24 @@ void AnalysisSolarWater()
 			
 			if( ev.GetFitResult(fitName).GetVertex(0).ContainsEnergy() ) {
 			  RAT::DS::FitResult fResult = ev.GetFitResult(fitName);
-			  if(fResult.GetValid()) { //cout<< " Fit is Valid "<<endl;
+			  if(fResult.GetValid()) { //cout<< " Fit is Valid "<<endl ;
 			    energy= fResult.GetVertex(0).GetEnergy(); }
 			}
 			
 			
 			if( !ev.ClassifierResultExists("ITR:waterFitter") ) continue;
-			//try{ ( ev.GetClassifierResult( "ITR:waterFitter" ).GetValid()== false ); continue; }
+			//try{ ( ev.GetClassifierResult( "ITR:waterFitter" ).GetValid()== false ) ; continue; }
 			//catch(RAT::DS::ClassifierResult::NoClassifierResultError& e){cout << "No 'ITR' classifier invoked in the macro." << endl; return;}
 			//try { itr = ev.GetClassifierResult( "ITR:waterFitter" ).GetClassification( "ITR" );}
-			//catch(RAT::DS::ClassifierResult::NoClassificationError& e){ cout<< " ITR classifier has failed "<< endl; return;}
+			//catch(RAT::DS::ClassifierResult::NoClassificationError& e){ cout<< " ITR classifier has failed "<< endl ; return ;}
+			if ( !ev.GetClassifierResult( "ITR:waterFitter" ).GetValid() ) continue;
 			itr = ev.GetClassifierResult( "ITR:waterFitter" ).GetClassification( "ITR" );		    
 			
 			if( !ev.ClassifierResultExists("isotropy:waterFitter") ) continue;
-			//try{ (ev.GetClassifierResult( "isotropy:waterFitter" ).GetValid()== false ); continue;}
+			//try{ (ev.GetClassifierResult( "isotropy:waterFitter" ).GetValid()== false ) ; continue;}
 			//catch(RAT::DS::ClassifierResult::NoClassifierResultError& e){cout << "No 'Beta14' classifier invoked in the macro." << endl; return;}
 			//try { iso = ev.GetClassifierResult( "isotropy:waterFitter" ).GetClassification( "snobeta14" );}
-			//catch(RAT::DS::ClassifierResult::NoClassificationError& e){ cout<< " Beta14 classifier has failed "<< endl; return;}
+			//catch(RAT::DS::ClassifierResult::NoClassificationError& e){ cout<< " Beta14 classifier has failed "<< endl ; return ;}
 			if ( !ev.GetClassifierResult( "isotropy:waterFitter" ).GetValid() ) continue;
 			iso = ev.GetClassifierResult( "isotropy:waterFitter" ).GetClassification( "snobeta14" );
 			//cout <<" itr "<<itr<<" iso "<<iso<<endl;
@@ -216,14 +210,14 @@ void AnalysisSolarWater()
 		      //if (directionFlag) 
 		      {
 			RAT::DS::UniversalTime eventTime = ev.GetUniversalTime();
-			day = eventTime.GetDays();
-			sec = eventTime.GetSeconds();
-			nsecs = eventTime.GetNanoSeconds();
+			day = eventTime.GetDays() ;
+			sec = eventTime.GetSeconds() ;
+			nsecs = eventTime.GetNanoSeconds() ;
 			TVector3 directionSun = RAT::SunDirection(eventTime.GetDays(),eventTime.GetSeconds(),eventTime.GetNanoSeconds());
 			sunDirX = directionSun.X();
 			sunDirY = directionSun.Y();
 			sunDirZ = directionSun.Z();
-			TVector3 eventDir; eventDir.SetXYZ(dirX,dirY, dirZ);
+			TVector3 eventDir; eventDir.SetXYZ(dirX,dirY, dirZ) ;
 			
 			cosThetaToSun = eventDir*(-1.0*directionSun);
 			
@@ -276,10 +270,7 @@ void AnalysisSolarWater()
   nHit_toSun_radius->SetZTitle( "Radius [mm]" );
   
   // Write the histograms to fileName
-  TString oldfile(filenames);
-  TString newfile = "FilteredSolar_"+oldfile;
-
-  TFile *file=new TFile(newfile,"RECREATE");
+  TFile *file=new TFile("FilteredSolar_Unclean.root","RECREATE");
   file->cd();
   tree->Write();
   radius->Write();

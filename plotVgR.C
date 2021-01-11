@@ -33,7 +33,7 @@
  double fitInfo1_1p45[]={7.82997, 301.138, 1.69691, 312.083, 0.528011, 304.146, -176.717,302.765};
 
 //after correction
- double fitInfoCor_1p35[]=={5.84304, 321.492, 2.68501, 333.43, 1.6432, 317.227, 166.16, 307.587};
+ double fitInfoCor_1p35[]={5.84304, 321.492, 2.68501, 333.43, 1.6432, 317.227, 166.16, 307.587};
  double fitInfoCor_1p36[]={6.16079, 307.109, 1.51769, 319.82, 0.996309, 306.678, 131.199, 299.476};
  double fitInfoCor_1p37[]={6.37953, 304.884, 2.4457, 317.588, 0.862657, 304.994, 96.1, 304.596};
  double fitInfoCor_1p38[]={7.17575, 296.751, 1.34298, 311.418, 1.03443, 293.912, 63.6663, 293.903};
@@ -105,18 +105,25 @@
 // gRcor->SetMarkerStyle(22);
 // gRcor->Draw("p");
 
- TGraph *gR = new TGraph(13,vg,PosMag);
- gR->GetXaxis()->SetTitle("water_RI");
- gR->GetYaxis()->SetTitle("|X_{fit}|-|X_{MC}| [mm]");
- gR->SetMarkerStyle(21);
- gR->SetMarkerSize(2);
- gR->Draw("ap");
+// TGraph *gR = new TGraph(13,vg,PosMag);
+// gR->GetXaxis()->SetTitle("water_RI");
+// gR->GetYaxis()->SetTitle("|X_{fit}|-|X_{MC}| [mm]");
+// gR->SetMarkerStyle(21);
+// gR->SetMarkerSize(2);
+// gR->Draw("ap");
 
- TGraph *gRcor = new TGraph(13,vg,PosMagCor2);
- gRcor->SetMarkerSize(2);
- gRcor->SetMarkerColor(kRed);
- gRcor->SetMarkerStyle(23);
- gRcor->Draw("p");
+ TGraph *gRcor2 = new TGraph(13,vg,PosMagCor2);
+ gRcor2->GetXaxis()->SetTitle("water_RI");
+ gRcor2->GetYaxis()->SetTitle("(X_{fit}-X_{MC})\cdot X [mm]");
+
+ gRcor2->SetMarkerSize(2);
+ gRcor2->SetMarkerColor(kRed);
+ gRcor2->SetMarkerStyle(23);
+ gRcor2->Draw("ap");
+
+
+
+
 /*
  TGraph *gRcor1 = new TGraph(13,vg,PosMagCor);
  gRcor1->SetMarkerSize(2);

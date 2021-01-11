@@ -32,14 +32,18 @@ long int outTimeWin = 2000; // 2000 micro s
 void AnalyBiPo()
 {
    //gSystem->cd("/scratch/djauty/data/full/Jan/6_16_11/");
-   const char* filename = "FitNormal_bipo214_0p5PPO_IsoTop_splitZ4500.root";
+   const char* filename = "Analysis10_r0000251230_s003_p000.root";
    TFile *f1 = new TFile(filename);
    RAT::DU::DSReader dsReader(filename);
    TVector3 sourcePos; 
    sourcePos.SetXYZ(0,0,0);
    const RAT::DU::PMTInfo& pmtInfo = RAT::DU::Utility::Get()->GetPMTInfo();
    RAT::DU::LightPathCalculator lightPath = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
-//const RAT::DU::GroupVelocity& groupVelocity = RAT::DU::Utility::Get()->GetGroupVelocity(); // To get the group velocity
+   RAT::DU::LightPathCalculator lightPath2 = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
+   RAT::DU::LightPathCalculator lightPath3 = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
+   RAT::DU::LightPathCalculator lightPath4 = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
+
+   //const RAT::DU::GroupVelocity& groupVelocity = RAT::DU::Utility::Get()->GetGroupVelocity(); // To get the group velocity
    const RAT::DU::EffectiveVelocity &effectiveVelocity = RAT::DU::Utility::Get()->GetEffectiveVelocity();
    TH2F* hPhiTheta = new TH2F("hPhiTheta","theta vs phi",1000,-TMath::Pi(),TMath::Pi(),1000,-1.0,1.0);
    // use lightPathCalculator
@@ -47,6 +51,12 @@ void AnalyBiPo()
    TH1F* htRes_fvcut = new TH1F("htRes_fvcut", "Time Residue, using lightPath, fvcut", 400,-100,300);
    TH1F* htRes_nhit100 = new TH1F("htRes_nhit100", "Time Residue, using lightPath, trig", 400,-100,300);
    TH1F* htRes_nhit300 = new TH1F("htRes_nhit300", "Time Residue, using lightPath, trig", 400,-100,300);
+
+   TH1F* htRes_bi212 = new TH1F("htRes_bi212", "Time Residue, using lightPath, bi212", 1600,-100,300);
+   TH1F* htRes_po212 = new TH1F("htRes_po212", "Time Residue, using lightPath, po212", 1600,-100,300);
+   TH1F* htRes_bi214 = new TH1F("htRes_bi214", "Time Residue, using lightPath, bi214", 1600,-100,300);
+   TH1F* htRes_po214 = new TH1F("htRes_po214", "Time Residue, using lightPath, po214", 1600,-100,300);
+
    TH2F* htResVsPMTz_nhit100 = new TH2F("htResVsPMTz_nhit100", "Time Residue vs PMTz, using lightPath, nhit>100", 400,-100,300, 2000,-9000,9000);
    TH1F* hNhitClean = new TH1F("hNhitClean","nhitCleaned, all triggered",2000,0,2000); //all fitted, nhitCleaned
    TH1F* hDeltaR = new TH1F("hDeltaR","deltaR",1000,0,9000);
@@ -163,9 +173,9 @@ void AnalyBiPo()
 	 if(nhits>nhitCut) {
             if(rev.FitResultExists("partialFitter")) {//find partialFitter exists
             try{
-                 RAT::DS::FitVertex fitVertex = rev.GetFitResult("partialFitter").GetVertex(0);
-                 if(fitVertex.ValidPosition())
-                 {
+               RAT::DS::FitVertex fitVertex = rev.GetFitResult("partialFitter").GetVertex(0);
+               if(fitVertex.ValidPosition())
+               {
                    pos_fit = fitVertex.GetPosition();
                    double tfit = fitVertex.GetTime();
                    double posX=(pos_fit.X()); double posY=(pos_fit.Y()); double posZ=(pos_fit.Z());
@@ -207,6 +217,7 @@ void AnalyBiPo()
                                   if(fitVertex2.ValidPosition())
                                   {
 				     TVector3 pos_fit2 = fitVertex2.GetPosition();
+                                     double tfit2 = fitVertex2.GetTime();
                                      Double_t day2 = revDely.GetUniversalTime().GetDays();
                                      Double_t second2 = revDely.GetUniversalTime().GetSeconds();
                                      Double_t nanosecond2 = revDely.GetUniversalTime().GetNanoSeconds();
@@ -221,7 +232,10 @@ void AnalyBiPo()
 				     if(deltaT>outTimeWin) timeOut = true;
 				     else if( deltaT>0.4 && deltaT<outTimeWin && (pos_fit-pos_fit2).Mag()<deltaRcut) // dR cut
 			             {
-					//count++;
+//calculate time residuals here
+                                       const RAT::DS::CalPMTs& calpmtsPri = rev.GetCalPMTs();
+                                       const RAT::DS::CalPMTs& calpmtsDely = revDely.GetCalPMTs();
+                                       //count++;
                                        evtPriID = evtPri; 
                                        nhitsPri = nhits;
                                        posxPri = pos_fit.X(), posyPri = pos_fit.Y(), poszPri = pos_fit.Z();
@@ -238,14 +252,28 @@ void AnalyBiPo()
 				       //std::cout<<"deltaT = " <<deltaT<<std::endl;
                                        if(deltaT>3.69 && deltaT<1800) // tag bipo214 (3.69 to 1800 us)
                                        {
-				         if(nhits<nhitBi214) { // tag bi214
+                                         if(nhits<nhitBi214) { // tag bi214
                                            tagBi214 = true;
                                            size_t gtid_bi214 = rev.GetGTID();
                                            hRZ_bi214->Fill(pos_fit.Perp(),pos_fit.Z());
                                            hYZ_bi214->Fill(pos_fit.Y(),pos_fit.Z());
                                            hDeltaT_bi214->Fill(deltaT);
                                            hnhits_bi214->Fill(nhits);
-					   // cout<<"bi214,id "<<gtid_bi214<<endl;
+                                           for(unsigned int ipmt=0;ipmt<calpmtsPri.GetCount();ipmt++)
+                                           {
+                                             TVector3 pmtpos = pmtInfo.GetPosition(calpmtsPri.GetPMT(ipmt).GetID());
+                                             double hitTime =(calpmtsPri.GetPMT(ipmt)).GetTime();
+                                             lightPath.CalcByPositionPartial( pos_fit, pmtpos );
+                                             double distInInnerAV = lightPath.GetDistInInnerAV();
+                                             double distInAV = lightPath.GetDistInAV();
+                                             double distInWater = lightPath.GetDistInWater();
+                                             double distInUpperTarget = lightPath.GetDistInUpperTarget();
+                                             double distInLowerTarget = lightPath.GetDistInLowerTarget();
+                                             const double transitTime = effectiveVelocity.CalcByDistance( distInUpperTarget, distInAV, distInWater+distInLowerTarget );
+                                             double tRes = ( hitTime - transitTime - tfit );
+                                             htRes_bi214->Fill(tRes);
+				           }
+					  // cout<<"bi214,id "<<gtid_bi214<<endl;
 				         }
                                          if(nhits2<nhitPo214) { // tag Po214
                                            tagPo214 = true;
@@ -254,6 +282,20 @@ void AnalyBiPo()
                                            hYZ_po214->Fill(pos_fit2.Y(),pos_fit2.Z());
                                            hDeltaT_po214->Fill(deltaT);
                                            hnhits_po214->Fill(nhits2);
+                                           for(unsigned int ipmt=0;ipmt<calpmtsDely.GetCount();ipmt++)
+                                           {
+                                             TVector3 pmtpos2 = pmtInfo.GetPosition(calpmtsDely.GetPMT(ipmt).GetID());
+                                             double hitTime2 =(calpmtsDely.GetPMT(ipmt)).GetTime();
+                                             lightPath2.CalcByPositionPartial( pos_fit2, pmtpos2 );
+                                             double distInInnerAV2 = lightPath2.GetDistInInnerAV();
+                                             double distInAV2 = lightPath2.GetDistInAV();
+                                             double distInWater2 = lightPath2.GetDistInWater();
+                                             double distInUpperTarget2 = lightPath2.GetDistInUpperTarget();
+                                             double distInLowerTarget2 = lightPath2.GetDistInLowerTarget();
+                                             const double transitTime2 = effectiveVelocity.CalcByDistance( distInUpperTarget2, distInAV2, distInWater2+distInLowerTarget2 );
+                                             double tRes2 = ( hitTime2 - transitTime2 - tfit2 );
+                                             htRes_po214->Fill(tRes2);
+                                           }
 					   // cout<<"Po214,id "<<gtid_po214<<endl;
 				         }
                                          TpairBipo214->Fill();
@@ -267,6 +309,20 @@ void AnalyBiPo()
                                             hYZ_bi212->Fill(pos_fit.Y(),pos_fit.Z());
                                             hDeltaT_bi212->Fill(deltaT);
                                             hnhits_bi212->Fill(nhits);
+                                            for(unsigned int ipmt=0;ipmt<calpmtsPri.GetCount();ipmt++)
+                                            {
+                                              TVector3 pmtpos3 = pmtInfo.GetPosition(calpmtsPri.GetPMT(ipmt).GetID());
+                                              double hitTime3 =(calpmtsPri.GetPMT(ipmt)).GetTime();
+                                              lightPath3.CalcByPositionPartial( pos_fit, pmtpos3 );
+                                              double distInInnerAV3 = lightPath3.GetDistInInnerAV();
+                                              double distInAV3 = lightPath3.GetDistInAV();
+                                              double distInWater3 = lightPath3.GetDistInWater();
+                                              double distInUpperTarget3 = lightPath3.GetDistInUpperTarget();
+                                              double distInLowerTarget3 = lightPath3.GetDistInLowerTarget();
+                                              const double transitTime3 = effectiveVelocity.CalcByDistance( distInUpperTarget3, distInAV3, distInWater3+distInLowerTarget3 );
+                                              double tRes3 = ( hitTime3 - transitTime3 - tfit );
+                                              htRes_bi212->Fill(tRes3);
+                                            }
                                           }
 				          if(nhits2<nhitPo212)
                                           {
@@ -275,6 +331,20 @@ void AnalyBiPo()
                                             hYZ_po212->Fill(pos_fit2.Y(),pos_fit2.Z());
                                             hDeltaT_po212->Fill(deltaT);
                                             hnhits_po212->Fill(nhits2);
+                                            for(unsigned int ipmt=0;ipmt<calpmtsDely.GetCount();ipmt++)
+                                            {
+                                              TVector3 pmtpos4 = pmtInfo.GetPosition(calpmtsDely.GetPMT(ipmt).GetID());
+                                              double hitTime4 =(calpmtsDely.GetPMT(ipmt)).GetTime();
+                                              lightPath4.CalcByPositionPartial( pos_fit2, pmtpos4 );
+                                              double distInInnerAV4 = lightPath4.GetDistInInnerAV();
+                                              double distInAV4 = lightPath4.GetDistInAV();
+                                              double distInWater4 = lightPath4.GetDistInWater();
+                                              double distInUpperTarget4 = lightPath4.GetDistInUpperTarget();
+                                              double distInLowerTarget4 = lightPath4.GetDistInLowerTarget();
+                                              const double transitTime4 = effectiveVelocity.CalcByDistance( distInUpperTarget4, distInAV4, distInWater4+distInLowerTarget4 );
+                                              double tRes4 = ( hitTime4 - transitTime4 - tfit2 );
+                                              htRes_po212->Fill(tRes4);
+                                            }
 				          }
 					  TpairBipo212->Fill();
 				          //std::cout<<"delay time "<<deltaT<<std::endl;
@@ -313,5 +383,7 @@ void AnalyBiPo()
    hRZ_bi212->Write(); hRZ_po212->Write(); hRZ_bi214->Write(); hRZ_po214->Write();
    hYZ_bi212->Write(); hYZ_po212->Write(); hYZ_bi214->Write(); hYZ_po214->Write();
    hnhits_bi212->Write();hnhits_po212->Write();hnhits_bi214->Write();hnhits_po214->Write();
+   htRes_bi212->Write(); htRes_po212->Write(); htRes_bi214->Write(); htRes_po214->Write();
+
    fp->Close();
 }
