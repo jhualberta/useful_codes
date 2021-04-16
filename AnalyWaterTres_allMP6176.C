@@ -56,10 +56,11 @@ void AnalyWaterTres_allMP6176()
   double posx, posy, posz, posRad, energyOrigin, energy, time, dirx, diry, dirz, sunDirX, sunDirY, sunDirZ, cosThetaToSun, ITR, beta14, itr, iso, thij;
   double posxcor, posycor, poszcor, posRadCor;
   double posTheta, posPhi;//for berkeley blob  
-  double prompt_cut; 
+  // double prompt_cut; 
   UInt_t nhits, day, sec, runNumber, subRun, eventGTID, fecdID, triggerWord;
   double nsecs;
-  double Gtest, Utest, posFOM, posFOM2, scaleLogL, dirFOM, dirFOM2, dirscaleLogL;
+  double Gtest, Utest, medianProbHit, medianProb, medianDev, medianDevHit;
+  double posFOM, posFOM2, scaleLogL, dirFOM, dirFOM2, dirscaleLogL;
 
   /// TVector3 objects  
   //tree->Branch("gFitPosition",&gFitPosition);
@@ -106,27 +107,30 @@ void AnalyWaterTres_allMP6176()
   tree->Branch("thetaij",&thij,"thij/D");
   tree->Branch("Gtest",&Gtest,"Gtest/D");
   tree->Branch("Utest",&Utest,"Utest/D");
+  tree->Branch("medianProbHit", &medianProbHit, "medianProbHit/D");
+  tree->Branch("medianProb", &medianProb, "medianProb/D");
+  tree->Branch("medianDevHit", &medianDevHit, "medianDevHit/D");
+  tree->Branch("medianDev", &medianDev, "medianDev/D");
   tree->Branch("posFOM",&posFOM,"posFOM/D");
   tree->Branch("posFOM2",&posFOM2,"posFOM2/D");
   tree->Branch("scaleLogL",&scaleLogL,"scaleLogL/D");
   tree->Branch("dirFOM",&dirFOM,"dirFOM/D");
   tree->Branch("dirFOM2",&dirFOM2,"dirFOM2/D");
   tree->Branch("dirscaleLogL",&dirscaleLogL,"dirscaleLogL/D"); 
-  tree->Branch("prompt_cut",&prompt_cut,"prompt_cut/D");
+  // tree->Branch("prompt_cut",&prompt_cut,"prompt_cut/D");
 
   //char filename[1500];
 
   Int_t i=0;
-  Int_t TriggerType;
+  Int_t TriggerType=0;
   Int_t nentries=0;
-  ULong64_t bitword;
+  ULong64_t p2_mask = 0xFB0000017FFE;//0xfb7ffff97ffe;//0xFB0000017FFE for 6.5.3, 0xfb7ffff97ffe for 6.17.6
 
   cout<<"!!!!! filename "<<filename<<endl;
    // Load the RAT file
   RAT::DU::DSReader dsReader(filename);
   // To later get the run info
   const RAT::DS::Run& run = dsReader.GetRun();
-
   size_t numEvents = dsReader.GetEntryCount();
   cout<<numEvents<<endl; 
   // Loop over all of the events
@@ -143,7 +147,7 @@ void AnalyWaterTres_allMP6176()
     //cosPMTMC->clear();
 
     size_t iEVCount = rDS.GetEVCount(); // Number of triggered events in this MC event
-    //ULong64_t dcAnalysisWord = RAT::GetDataCleaningWord( "analysis_mask" );
+    ULong64_t dcAnalysisWord = RAT::GetDataCleaningWord( "analysis_mask" );
     if (iEntry%10000 == 0) {
       cout<<"processed "<<iEntry<<endl;
     }
@@ -155,10 +159,21 @@ void AnalyWaterTres_allMP6176()
           // Get the event
           const RAT::DS::EV& ev = rDS.GetEV(iEV);
           const RAT::DS::CalPMTs& calpmts = ev.GetCalPMTs();
-          //runNumber = run.GetRunID();
-          //RAT::DS::DataQCFlags dcflags = ev.GetDataCleaningFlags();
-          //if( RAT::EventIsClean( ev, dcAnalysisWord ) )
+          runNumber = run.GetRunID();
+          RAT::DS::DataQCFlags dcflags = ev.GetDataCleaningFlags();
+          ULong64_t dcApplied;
+          ULong64_t dcFlagged;
+	  Int_t fPass = ev.GetDataCleaningFlags().GetLatestPass();
+          if(fPass >= 0)
           {
+            dcApplied = ev.GetDataCleaningFlags().GetApplied(fPass).GetULong64_t(0);
+            dcFlagged = ev.GetDataCleaningFlags().GetFlags(fPass).GetULong64_t(0);
+          }
+          else continue;
+
+	  //if(RAT::EventIsClean( ev, dcAnalysisWord )
+          if( ((dcApplied & p2_mask) & dcFlagged) == (dcApplied & p2_mask) )
+	  {
 	     //cout<<" iEntry "<<iEntry<< endl;
 	     TVector3 pos_fit;
 	     bool directionFlag = false;
@@ -183,9 +198,9 @@ void AnalyWaterTres_allMP6176()
                   {  // It needs to exist
                     try {//!!! fVertex somehow broken here 
                      RAT::DS::FitVertex fVertex = ev.GetFitResult("waterFitterMP").GetVertex(0);
-		             if( fVertex.ValidPosition() )
-		             {
-                      //std::cout<<"eventGTID "<<eventGTID<<" "<<iEntry<<std::endl;
+		     if( fVertex.ValidPosition() )
+		     {
+                      eventGTID = ev.GetGTID(); 
                       pos_fit = fVertex.GetPosition(); 
           
                       RAT::DS::FitVertex fVertex1 =ev.GetFitResult("waterFitterMP").GetVertex(0);
@@ -197,7 +212,7 @@ void AnalyWaterTres_allMP6176()
                        {std::cout<<e.what()<<" problems in dir fit"<<std::endl;}
                         //NOTE: drive correction here
 		       //pos_fit = driveP0*pos_fit + driveP1*u_fit;
-                      tfit = fVertex.GetTime();
+		      time = fVertex.GetTime();
 		      //!!! z - 108
                       posx = pos_fit.X();posy = pos_fit.Y();posz = pos_fit.Z();
                       posFOM = ev.GetFitResult(fitName).GetFOM("Positionmultipath_waterposition");
@@ -221,6 +236,10 @@ void AnalyWaterTres_allMP6176()
 		      energy = eCorr.CorrectEnergyRSP(energyOrigin,2);
                       Gtest =  fResult.GetFOM("EnergyGtest");
                       Utest =  fResult.GetFOM("EnergyUtest");
+                      medianProbHit = fResult.GetFOM("EnergyMedianProbHit");
+                      medianProb    = fResult.GetFOM("EnergyMedianProb");
+                      medianDevHit  = fResult.GetFOM("EnergyMedianDevHit");
+                      medianDev     = fResult.GetFOM("EnergyMedianDev");
 
 		      if( !ev.ClassifierResultExists("ITR:waterFitterMP") ) continue;
                       if ( !ev.GetClassifierResult( "ITR:waterFitterMP" ).GetValid() ) continue;
@@ -254,8 +273,8 @@ void AnalyWaterTres_allMP6176()
                          double distInAV = lightPath.GetDistInAV();
                          double distInWater = lightPath.GetDistInWater();
                          const double transitTime = groupVelocity.CalcByDistance( distInInnerAV, distInAV, distInWater );
-                         //double tRes = (calpmts.GetPMT(ipmt)).GetTime()-tfit-(pmtpos-pos_fit).Mag()/grVelocity;
-                         double tRes = hitTime - transitTime - tfit;
+                         //double tRes = (calpmts.GetPMT(ipmt)).GetTime()-time-(pmtpos-pos_fit).Mag()/grVelocity;
+                         double tRes = hitTime - transitTime - time;
                          gtRes->push_back(tRes);
 
                          double cosThetaTrue = (pmtpos - pos_fit).Unit()*-1*directionSun;

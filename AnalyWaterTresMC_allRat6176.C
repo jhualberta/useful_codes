@@ -23,9 +23,9 @@
 #include <vector>
 //Modified from AnalysisKarinN16.C, get tRes only!
 using namespace std;
-void AnalyWaterTresMC_allMP6176()
+void AnalyWaterTresMC_allRat6176()
 {
-  const char* filename = "WaterMP6176general_nhit15_Analysis_r0000200004_s000_p010.root";
+  const char* filename = "GeneralPhysicsMC_WaterTl208Run_r201084_missing_s0_p0.root";
   const RAT::DU::PMTInfo& pmtInfo = RAT::DU::Utility::Get()->GetPMTInfo();
   // cannot be used in 6.17.3
   RAT::DU::LightPathCalculator lightPath = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
@@ -60,7 +60,8 @@ void AnalyWaterTresMC_allMP6176()
   double prompt_cut; 
   UInt_t nhits, day, sec, runNumber, subRun, eventGTID, fecdID, triggerWord;
   double nsecs;
-  double Gtest, Utest, posFOM, posFOM2, scaleLogL, dirFOM, dirFOM2, dirscaleLogL;
+  double Gtest, Utest, medianProbHit, medianProb, medianDev, medianDevHit;
+  double posFOM, posFOM2, scaleLogL, dirFOM, dirFOM2, dirscaleLogL;
 
   /// TVector3 objects  
   //tree->Branch("gFitPosition",&gFitPosition);
@@ -108,6 +109,10 @@ void AnalyWaterTresMC_allMP6176()
   tree->Branch("thetaij",&thij,"thij/D");
   tree->Branch("Gtest",&Gtest,"Gtest/D");
   tree->Branch("Utest",&Utest,"Utest/D");
+  tree->Branch("medianProbHit", &medianProbHit, "medianProbHit/D");
+  tree->Branch("medianProb", &medianProb, "medianProb/D");
+  tree->Branch("medianDevHit", &medianDevHit, "medianDevHit/D");
+  tree->Branch("medianDev", &medianDev, "medianDev/D");
   tree->Branch("posFOM",&posFOM,"posFOM/D");
   tree->Branch("posFOM2",&posFOM2,"posFOM2/D");
   tree->Branch("scaleLogL",&scaleLogL,"scaleLogL/D");
@@ -119,7 +124,7 @@ void AnalyWaterTresMC_allMP6176()
   //char filename[1500];
 
   Int_t i=0;
-  Int_t TriggerType;
+  Int_t TriggerType=0;
   Int_t nentries=0;
   ULong64_t bitword;
 
@@ -186,8 +191,8 @@ void AnalyWaterTresMC_allMP6176()
                   {  // It needs to exist
                     try {//!!! fVertex somehow broken here 
                      RAT::DS::FitVertex fVertex = ev.GetFitResult("waterFitter").GetVertex(0);
-		             if( fVertex.ValidPosition() )
-		             {
+		     if( fVertex.ValidPosition() )
+		     {
                       eventGTID = ev.GetGTID();
                       pos_fit = fVertex.GetPosition(); 
           
@@ -224,6 +229,10 @@ void AnalyWaterTresMC_allMP6176()
 		      energy = eCorr.CorrectEnergyRSP(energyOrigin,2);
                       Gtest =  fResult.GetFOM("EnergyGtest");
                       Utest =  fResult.GetFOM("EnergyUtest");
+                      medianProbHit = fResult.GetFOM("EnergyMedianProbHit");
+                      medianProb    = fResult.GetFOM("EnergyMedianProb");
+                      medianDevHit  = fResult.GetFOM("EnergyMedianDevHit");
+                      medianDev     = fResult.GetFOM("EnergyMedianDev");
 
                        cosThetaToSun = -2.;
                       // Now look the direction to the Sun

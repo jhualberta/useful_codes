@@ -59,7 +59,8 @@ void AnalyWaterTresMC_allMP6176()
   double prompt_cut; 
   UInt_t nhits, day, sec, runNumber, subRun, eventGTID, fecdID, triggerWord;
   double nsecs;
-  double Gtest, Utest, posFOM, posFOM2, scaleLogL, dirFOM, dirFOM2, dirscaleLogL;
+  double Gtest, Utest, medianProbHit, medianProb, medianDev, medianDevHit;
+  double posFOM, posFOM2, scaleLogL, dirFOM, dirFOM2, dirscaleLogL;
 
   /// TVector3 objects  
   //tree->Branch("gFitPosition",&gFitPosition);
@@ -107,6 +108,10 @@ void AnalyWaterTresMC_allMP6176()
   tree->Branch("thetaij",&thij,"thij/D");
   tree->Branch("Gtest",&Gtest,"Gtest/D");
   tree->Branch("Utest",&Utest,"Utest/D");
+  tree->Branch("medianProbHit", &medianProbHit, "medianProbHit/D");
+  tree->Branch("medianProb", &medianProb, "medianProb/D");
+  tree->Branch("medianDevHit", &medianDevHit, "medianDevHit/D");
+  tree->Branch("medianDev", &medianDev, "medianDev/D");
   tree->Branch("posFOM",&posFOM,"posFOM/D");
   tree->Branch("posFOM2",&posFOM2,"posFOM2/D");
   tree->Branch("scaleLogL",&scaleLogL,"scaleLogL/D");
@@ -157,7 +162,7 @@ void AnalyWaterTresMC_allMP6176()
           // Get the event
           const RAT::DS::EV& ev = rDS.GetEV(iEV);
           const RAT::DS::CalPMTs& calpmts = ev.GetCalPMTs();
-          //runNumber = run.GetRunID();
+          runNumber = run.GetRunID();
           //RAT::DS::DataQCFlags dcflags = ev.GetDataCleaningFlags();
           //if( RAT::EventIsClean( ev, dcAnalysisWord ) )
           {
@@ -165,7 +170,7 @@ void AnalyWaterTresMC_allMP6176()
 	     TVector3 pos_fit;
 	     bool directionFlag = false;
 	     TVector3 u_fit;
-	     const string fitName = "waterFitter";
+	     const string fitName = "waterFitterMP";
              pvfecd->clear();
              for(unsigned int ipmt=0;ipmt<calpmts.GetFECDCount();ipmt++)//do FECD cuts
              {
@@ -184,13 +189,13 @@ void AnalyWaterTresMC_allMP6176()
                   if(checkFitExist)
                   {  // It needs to exist
                     try {//!!! fVertex somehow broken here 
-                     RAT::DS::FitVertex fVertex = ev.GetFitResult("waterFitter").GetVertex(0);
-		             if( fVertex.ValidPosition() )
-		             {
-                      //std::cout<<"eventGTID "<<eventGTID<<" "<<iEntry<<std::endl;
+                     RAT::DS::FitVertex fVertex = ev.GetFitResult("waterFitterMP").GetVertex(0);
+		     if( fVertex.ValidPosition() )
+		     {
+                      eventGTID = ev.GetGTID();
                       pos_fit = fVertex.GetPosition(); 
           
-                      RAT::DS::FitVertex fVertex1 =ev.GetFitResult("waterFitter").GetVertex(0);
+                      RAT::DS::FitVertex fVertex1 =ev.GetFitResult("waterFitterMP").GetVertex(0);
                       if(fVertex1.ValidDirection()) {
                        try{
                          u_fit = fVertex1.GetDirection();
@@ -202,11 +207,11 @@ void AnalyWaterTresMC_allMP6176()
 		      time = fVertex.GetTime();
 		      //!!! z - 108
                       posx = pos_fit.X();posy = pos_fit.Y();posz = pos_fit.Z();
-                      posFOM = ev.GetFitResult(fitName).GetFOM("PositionLogL");
-                      posFOM2 = ev.GetFitResult(fitName).GetFOM("PositionSelectedNHit");
+                      posFOM = ev.GetFitResult(fitName).GetFOM("Positionmultipath_waterposition");
+                      posFOM2 = ev.GetFitResult(fitName).GetFOM("Positionmultipath_SelectedNHit_waterposition");
 		      scaleLogL = posFOM/posFOM2;
-                      dirFOM = ev.GetFitResult(fitName).GetFOM("DirectionLogL");
-                      dirFOM2 = ev.GetFitResult(fitName).GetFOM("DirectionSelectedNHit");
+                      dirFOM = ev.GetFitResult(fitName).GetFOM("Directionmultipath_waterdirection");
+                      dirFOM2 = ev.GetFitResult(fitName).GetFOM("Directionmultipath_SelectedNHit_waterdirection");
                       dirscaleLogL = dirFOM/dirFOM2;
                       double radiusOfEvent = sqrt(posx*posx+posy*posy+(posz-108)*(posz-108));
                       posTheta = pos_fit.CosTheta(); posPhi = pos_fit.Phi();
@@ -223,6 +228,10 @@ void AnalyWaterTresMC_allMP6176()
 		      energy = eCorr.CorrectEnergyRSP(energyOrigin,2);
                       Gtest =  fResult.GetFOM("EnergyGtest");
                       Utest =  fResult.GetFOM("EnergyUtest");
+                      medianProbHit = fResult.GetFOM("EnergyMedianProbHit");
+                      medianProb    = fResult.GetFOM("EnergyMedianProb");
+                      medianDevHit  = fResult.GetFOM("EnergyMedianDevHit");
+                      medianDev     = fResult.GetFOM("EnergyMedianDev");
 
 		      if( !ev.ClassifierResultExists("ITR:waterFitterMP") ) continue;
                       if ( !ev.GetClassifierResult( "ITR:waterFitterMP" ).GetValid() ) continue;
