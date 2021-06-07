@@ -365,89 +365,89 @@
 
   TCanvas *c00 = new TCanvas("c00", "muP", 900, 600); 
   c00->Divide(3,2);
-  c00->cd(1);
+  c00->cd(1);gPad->SetGridx();gPad->SetGridy();
   TGraphErrors *gx_muP = new TGraphErrors(nx,x,X_muP_x,X_ex,X_muPerr_x); //z scan, z
   TGraphErrors *gxMC_muP = new TGraphErrors(nx,x,X_MCmuP_x,X_ex,X_MCmuPerr_x);
   gx_muP->SetMarkerStyle(21);
   gxMC_muP->SetMarkerStyle(24);
   gxMC_muP->SetMarkerColor(kRed);
-  gx_muP->SetMarkerSize(2);
-  gxMC_muP->SetMarkerSize(2);
+  gx_muP->SetMarkerSize(1.6);
+  gxMC_muP->SetMarkerSize(1.6);
   gx_muP->Draw("AP");
   gxMC_muP->Draw("P");
   gx_muP->SetTitle("X scan");
   gx_muP->GetYaxis()->SetRangeUser(-30,30);
-  gx_muP->GetYaxis()->SetTitle("#mu_{P}");
+  gx_muP->GetYaxis()->SetTitle("#mu_{P} [mm]");
 
-  c00->cd(2);
+  c00->cd(2);gPad->SetGridx();gPad->SetGridy();
   TGraphErrors *gy_muP = new TGraphErrors(ny,y,Y_muP_y,Y_ex,Y_muPerr_y); //z scan, z
   TGraphErrors *gyMC_muP = new TGraphErrors(ny,y,Y_MCmuP_y,Y_ex,Y_MCmuPerr_y);
   gy_muP->SetMarkerStyle(21);
   gyMC_muP->SetMarkerStyle(24);
   gyMC_muP->SetMarkerColor(kRed);
-  gy_muP->SetMarkerSize(2);
-  gyMC_muP->SetMarkerSize(2);
+  gy_muP->SetMarkerSize(1.6);
+  gyMC_muP->SetMarkerSize(1.6);
   gy_muP->Draw("AP");
   gyMC_muP->Draw("P");
   gy_muP->SetTitle("Y scan");
   gy_muP->GetYaxis()->SetRangeUser(-30,30);
-  gy_muP->GetYaxis()->SetTitle("#mu_{P}");
+  gy_muP->GetYaxis()->SetTitle("#mu_{P} [mm]");
 
-  c00->cd(3);
+  c00->cd(3);gPad->SetGridx();gPad->SetGridy();
   TGraphErrors *gz_muP = new TGraphErrors(nz,z,Z_muP_z,Z_ex,Z_muPerr_z); //z scan, z
   TGraphErrors *gzMC_muP = new TGraphErrors(nz,z,Z_MCmuP_z,Z_ex,Z_MCmuPerr_z); 
   gz_muP->SetMarkerStyle(21);
   gzMC_muP->SetMarkerStyle(24);
   gzMC_muP->SetMarkerColor(kRed);
-  gz_muP->SetMarkerSize(2);
-  gzMC_muP->SetMarkerSize(2);
+  gz_muP->SetMarkerSize(1.6);
+  gzMC_muP->SetMarkerSize(1.6);
   gz_muP->Draw("AP");
   gzMC_muP->Draw("P");
   gz_muP->SetTitle("Z scan");
   gz_muP->GetYaxis()->SetRangeUser(-30,30);
-  gz_muP->GetYaxis()->SetTitle("#mu_{P}");
+  gz_muP->GetYaxis()->SetTitle("#mu_{P} [mm]");
 
-  c00->cd(4);
+  c00->cd(4);gPad->SetGridx();gPad->SetGridy();
   TGraphErrors *gx_sigmaP = new TGraphErrors(nx,x,X_sigmaP_x,X_ex,X_sigmaPerr_x); //z scan, z
   TGraphErrors *gxMC_sigmaP = new TGraphErrors(nx,x,X_MCsigmaP_x,X_ex,X_MCsigmaPerr_x);
   gx_sigmaP->SetMarkerStyle(21);
   gxMC_sigmaP->SetMarkerStyle(24);
   gxMC_sigmaP->SetMarkerColor(kRed);
-  gx_sigmaP->SetMarkerSize(2);
-  gxMC_sigmaP->SetMarkerSize(2);
+  gx_sigmaP->SetMarkerSize(1.6);
+  gxMC_sigmaP->SetMarkerSize(1.6);
   gx_sigmaP->Draw("AP");
   gxMC_sigmaP->Draw("P");
-  gx_sigmaP->GetXaxis()->SetTitle("X scan, source position [mm]");
+  gx_sigmaP->GetXaxis()->SetTitle("X scan, source position x [mm]");
   gx_sigmaP->GetYaxis()->SetRangeUser(100,330);
-  gx_sigmaP->GetYaxis()->SetTitle("#sigma_{P}");
+  gx_sigmaP->GetYaxis()->SetTitle("#sigma_{P} [mm]");
 
-  c00->cd(5);
+  c00->cd(5);gPad->SetGridx();gPad->SetGridy();
   TGraphErrors *gy_sigmaP = new TGraphErrors(ny,y,Y_sigmaP_y,Y_ex,Y_sigmaPerr_y); //z scan, z
   TGraphErrors *gyMC_sigmaP = new TGraphErrors(ny,y,Y_MCsigmaP_y,Y_ex,Y_MCsigmaPerr_y);
   gy_sigmaP->SetMarkerStyle(21);
   gyMC_sigmaP->SetMarkerStyle(24);
   gyMC_sigmaP->SetMarkerColor(kRed);
-  gy_sigmaP->SetMarkerSize(2);
-  gyMC_sigmaP->SetMarkerSize(2);
+  gy_sigmaP->SetMarkerSize(1.6);
+  gyMC_sigmaP->SetMarkerSize(1.6);
   gy_sigmaP->Draw("AP");
   gyMC_sigmaP->Draw("P");
-  gy_sigmaP->GetXaxis()->SetTitle("Y scan, source position [mm]");
+  gy_sigmaP->GetXaxis()->SetTitle("y scan, source position y [mm]");
   gy_sigmaP->GetYaxis()->SetRangeUser(100,330);
-  gy_sigmaP->GetYaxis()->SetTitle("#sigma_{P}");
+  gy_sigmaP->GetYaxis()->SetTitle("#sigma_{P} [mm]");
 
-  c00->cd(6);
+  c00->cd(6);gPad->SetGridx();gPad->SetGridy();
   TGraphErrors *gz_sigmaP = new TGraphErrors(nz,z,Z_sigmaP_z,Z_ex,Z_sigmaPerr_z); //z scan, z
   TGraphErrors *gzMC_sigmaP = new TGraphErrors(nz,z,Z_MCsigmaP_z,Z_ex,Z_MCsigmaPerr_z);
   gz_sigmaP->SetMarkerStyle(21);
   gzMC_sigmaP->SetMarkerStyle(24);
   gzMC_sigmaP->SetMarkerColor(kRed);
-  gz_sigmaP->SetMarkerSize(2);
-  gzMC_sigmaP->SetMarkerSize(2);
+  gz_sigmaP->SetMarkerSize(1.6);
+  gzMC_sigmaP->SetMarkerSize(1.6);
   gz_sigmaP->Draw("AP");
   gzMC_sigmaP->Draw("P");
-  gz_sigmaP->GetXaxis()->SetTitle("Z scan, source position [mm]");
+  gz_sigmaP->GetXaxis()->SetTitle("z scan, source position z [mm]");
   gz_sigmaP->GetYaxis()->SetRangeUser(100,330);
-  gz_sigmaP->GetYaxis()->SetTitle("#sigma_{P}");
+  gz_sigmaP->GetYaxis()->SetTitle("#sigma_{P} [mm]");
 
 
   TCanvas *c3 = new TCanvas("c3","resolution",800,600);
