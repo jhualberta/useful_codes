@@ -1,42 +1,54 @@
 {
-
-
-  double z[] ={-4999.899,-4500.2,-4001,-3501.399,-2999.7,-2500.399,-1998.499,-1000.099,-499.6,500.8,1000.3,1500.9,2000.001,2500.3,3000.3,3500.9,4000.5,4500.4,4973.567};
+  // fix aM and fix 1
+  double z[] ={-5501.2,-4999.899,-4500.2,-4001,-3501.399,-2999.7,-2500.399,-1998.499,-1499.5,-1000.099,-499.6,0.401,500.8,1000.3,1500.9,2000.001,2500.3,3000.3,3500.9,4000.5,4500.4,4973.567,6496.04, 6997.52,7499.79};
   int ndataz = int(sizeof(z)/sizeof(double));
-  const int nz = 19;//ndataz;
-  double y[]={-0.201,-998.068,-2000.578,-2998.017,-3992.167,-4999.882,5002.057,3973.021,2980.035,1986.669,994.183,496.858,1494.71,2487.539,3496.338,4505.371,-501.268,-1494.927,-2487.912,-3475.769,-4498.62};
+
+  const int nz = 19+6;//ndataz + 3*neck scan;
+  double errorZdefault[nz];
+  double ZdeltaBetaM_Err[nz];
+  double ZdeltaBetaS_Err[nz];
+
+  for(int i = 0;i<ndataz; i++) errorZdefault[i] = 0;
+
+  double y[]={-0.201,-998.068,-2000.578,-2998.017,-3992.167,-4999.882,5002.057,3973.021,2980.035,1986.669,994.183,496.858,1494.71,2487.539,3496.338,4505.371,-501.268,-1494.927,-2487.912,-3475.769,-4498.62,-4874.53};
   int ndatay = int(sizeof(y)/sizeof(double));
   const int ny = 21;//ndatay;
+  double errorYdefault[ny];
+  double YdeltaBetaM_Err[ny];
+  double YdeltaBetaS_Err[ny];
+
   double x[]={-4999.043,-4002.525,-3004.229,-2000.155,-992.994,998.133,2011.103,4003.323,5004.868,4503.445,-4489.301,3511.147,2502.805,-3476.709};
   int ndatax = int(sizeof(x)/sizeof(double));
   const int nx = 15;//ndatax; 
-  /// for z-scan
-  double z_betaM[] = {4.269,4.144,4.051,4.044,4.158,4.231,4.249,4.198,4.6,3.919,4.289,4.134,3.904,4.132,3.95,4.026,3.895,3.756,3.944};
-  double z_betaM_rms[]={0.09955,0.1162,0.1063,0.1107,0.1107,0.117,0.1188,0.1197,0.1216,0.1125,0.1277,0.09398,0.09414,0.1092,0.1355,0.1315,0.09658,0.08698,0.0996};
-  double z_betaS[] = {16.36,18.19,16.89,17.78,17.81,18.15,18.14,18.14,18.09,18.18,18.19,18.1,17.83,18.04,18.23,17.41,16.59,17.71,19.02};
-  double z_betaS_rms[]={0.7386,0.9655,0.5571,0.6232,0.6285,0.6666,0.673,0.6826,0.6958,0.6392,0.7342,0.5364,0.7828,0.7493,0.7497,0.7139,0.7022,0.7402,0.866};
-  double z_chi[]={1.172,1.07,1.029,1.076,0.9029,1.111,1.555,0.8367,0.8617,0.9837,1.003,1.374,1.083,1.317,1.479,0.96,1.079,1.026,1.296};
+  double errorXdefault[nx];
+  double XdeltaBetaM_Err[nx];
+  double XdeltaBetaS_Err[nx];
 
-  double zMC_betaM[] = {4.353,4.298,4.419,4.37,4.375,4.394,4.45,4.244,4.33,4.568,4.381,4.396,4.521,4.339,4.412,4.314,4.46,4.431,4.586};
-  double zMC_betaM_rms[]={0.08035,0.07536,0.07571,0.07492,0.07497,0.07412,0.07498,0.07467,0.07424,0.07618,0.07427,0.07458,0.07659,0.07534,0.07483,0.07435,0.07672,0.07488,0.07961};
-  double zMC_betaS[] = {17.04,17.31,19.4,18.63,19.29,19.75,19.13,18.47,19.25,18.62,18.72,19.05,18.32,18.92,19.17,17.97,17.43,17.23,17.84};
-  double zMC_betaS_rms[]={0.3891,0.37,0.4089,0.395,0.4057,0.4136,0.4019,0.3881,0.4013,0.4004,0.3954,0.3988,0.3915,0.3961,0.4037,0.3794,0.3766,0.3677,0.4036};
-  double zMC_chi[] = {0.8944,1.218,1.111,1.089,1.065,1.286,1.032,1.14,0.8703,1.725,1,1.217,1.246,1.04,0.9364,0.8872,1.082,1.097,1.104};
+  /// for z-scan
+  double z_betaM[] = {4.22,4.269,4.144,4.051,4.044,4.158,4.231,4.249,4.198,4.198,4.6,4.091,3.919,4.289,4.134,3.904,4.132,3.95,4.026,3.895,3.756,3.944,   3.632,3.533,2.953};
+  double z_betaM_rms[]={0.1181,0.09955,0.1162,0.1063,0.1107,0.1107,0.117,0.1188,0.1188,0.1197,0.1216,0.1246,0.1125,0.1277,0.09398,0.09414,0.1092,0.1355,0.1315,0.09658,0.08698,0.0996,   0.09315,0.1028,0.1322};
+  double z_betaS[] = {17.79,16.36,18.19,16.89,17.78,17.81,18.15,18.14,18.55,18.14,18.09,19.87,18.18,18.19,18.1,17.83,18.04,18.23,17.41,16.59,17.71,19.02,    13.79,13.87,11.5};
+  double z_betaS_rms[]={0.9296,0.7386,0.9655,0.5571,0.6232,0.6285,0.6666,0.673,0.6817,0.6826,0.6958,0.7644,0.6392,0.7342,0.5364,0.7828,0.7493,0.7497,0.7139,0.7022,0.7402,0.866,  0.4035,0.4407,0.4501};
+  double z_chi[]={0.874,1.172,1.07,1.029,1.076,0.9029,1.111,1.555,0.8063,0.8367,0.8617,0.8609,0.9837,1.003,1.374,1.083,1.317,1.479,0.96,1.079,1.026,1.296,     1.021,1.127,0.9861};
+  double zMC_betaM[] = {4.362,4.353,4.298,4.419,4.37,4.375,4.394,4.45,4.283,4.244,4.33,4.316,4.568,4.381,4.396,4.521,4.339,4.412,4.314,4.46,4.431,4.586,    3.766,3.749,3.072};
+  double zMC_betaM_rms[]={0.09482,0.08035,0.07536,0.07571,0.07492,0.07497,0.07412,0.07498,0.07557,0.07467,0.07424,0.07545,0.07618,0.07427,0.07458,0.07659,0.07534,0.07483,0.07435,0.07672,0.07488,0.07961,    0.08343,0.09336,0.1159};
+  double zMC_betaS[] = {17.81,17.04,17.31,19.4,18.63,19.29,19.75,19.13,19.02,18.47,19.25,18.38,18.62,18.72,19.05,18.32,18.92,19.17,17.97,17.43,17.23,17.84,    14.32,12.91,14.02};
+  double zMC_betaS_rms[]={0.471,0.3891,0.37,0.4089,0.395,0.4057,0.4136,0.4019,0.3996,0.3881,0.4013,0.3872,0.4004,0.3954,0.3988,0.3915,0.3961,0.4037,0.3794,0.3766,0.3677,0.4036,    0.3393,0.348,0.4324};
+  double zMC_chi[] = {0.7878,0.8944,1.218,1.111,1.089,1.065,1.286,1.032,1.346,1.14,0.8703,1.053,1.725,1,1.217,1.246,1.04,0.9364,0.8872,1.082,1.097,1.104,    0.9238,1.309,1.586};
 
   double ez[nz] ={0};
 
   // y scan
-  double y_betaM[] = {3.961,4.163,4.353,4.5,4.029,4.132,4.083,4.086,4.194,4.151,4.138,4.147,4.163,4.133,4.196,4.018,4.092,4.003,4.079,4.127,4.202};
-  double y_betaM_rms[]={0.1072,0.1048,0.1203,0.1205,0.12,0.1284,0.1192,0.1177,0.1078,0.1084,0.1184,0.1191,0.1135,0.12,0.1217,0.1024,0.09031,0.1072,0.1042,0.1116,0.1115};
-  double y_betaS[] = {18.81,17.9,18.01,17.62,18.01,16.41,16.73,17.51,18.25,18.69,18.95,18.02,18.69,18.64,17.94,17.61,17.91,18.37,18.57,16.95,17.69};
-  double y_betaS_rms[]={0.6217,0.58,0.6787,0.6611,0.6715,0.6601,0.6201,0.6418,0.6137,0.6341,0.6957,0.6663,0.6603,0.6946,0.6822,0.5565,0.5033,0.6038,0.5995,0.603,0.6188};
-  double y_chi[]={1.188,0.8863,1.227,1.581,1.052,1.36,1.416,1.045,0.9532,0.9704,1.019,0.9075,1.185,1.144,0.8667,0.8173,1.143,0.9856,1.011,1.102,0.8898};
-
-  double yMC_betaM[] = {4.291,4.326,4.445,4.493,4.357,4.393,4.336,4.471,4.356,4.427,4.384,4.422,4.291,4.478,4.288,4.3,4.337,4.357,4.338,4.451,4.249};
-  double yMC_betaM_rms[]={0.07522,0.07413,0.07551,0.0754,0.07656,0.08164,0.08208,0.07524,0.07495,0.07514,0.07483,0.07452,0.0737,0.07505,0.07554,0.0751,0.07471,0.07481,0.07604,0.0757,0.0748};
-  double yMC_betaS[] = {18.83,18.28,18.9,18.4,18.3,17.17,17.75,18.55,18.4,18.36,18.37,18.94,18.73,18.82,18.63,18.64,18.7,18.38,17.98,18.69,18.12};
-  double yMC_betaS_rms[]={0.3965,0.3842,0.4004,0.3879,0.3931,0.3977,0.4103,0.3936,0.3911,0.3891,0.3877,0.3982,0.3928,0.3987,0.3935,0.3923,0.392,0.3872,0.3825,0.3995,0.3808};
-  double yMC_chi[] = {1.01,1.117,1.11,1.366,1.468,0.9478,1.43,1.273,1.507,1.155,1.301,1.152,1.274,0.9234,1.062,1.255,1.027,1.112,1.254,0.9995,1.088};
+  double y_betaM[] = {3.961,4.163,4.353,4.5,4.029,4.132,4.083,4.086,4.194,4.151,4.138,4.147,4.163,4.133,4.196,4.018,4.092,4.003,4.079,4.127,4.202,4.034};
+  double y_betaM_rms[]={0.1072,0.1048,0.1203,0.1205,0.12,0.1284,0.1192,0.1177,0.1078,0.1084,0.1184,0.1191,0.1135,0.12,0.1217,0.1024,0.09031,0.1072,0.1042,0.1116,0.1115,0.07446};
+  double y_betaS[] = {18.81,17.9,18.01,17.62,18.01,16.41,16.73,17.51,18.25,18.69,18.95,18.02,18.69,18.64,17.94,17.61,17.91,18.37,18.57,16.95,17.69,17.3};
+  double y_betaS_rms[]={0.6217,0.58,0.6787,0.6611,0.6715,0.6601,0.6201,0.6418,0.6137,0.6341,0.6957,0.6663,0.6603,0.6946,0.6822,0.5565,0.5033,0.6038,0.5995,0.603,0.6188,0.3981};
+  double y_chi[]={1.188,0.8863,1.227,1.581,1.052,1.36,1.416,1.045,0.9532,0.9704,1.019,0.9075,1.185,1.144,0.8667,0.8173,1.143,0.9856,1.011,1.102,0.8898,1.147};
+  double yMC_betaM[] = {4.291,4.326,4.445,4.493,4.357,4.393,4.336,4.471,4.356,4.427,4.384,4.422,4.291,4.478,4.288,4.3,4.337,4.357,4.338,4.451,4.249,4.502};
+  double yMC_betaM_rms[]={0.07522,0.07413,0.07551,0.0754,0.07656,0.08164,0.08208,0.07524,0.07495,0.07514,0.07483,0.07452,0.0737,0.07505,0.07554,0.0751,0.07471,0.07481,0.07604,0.0757,0.0748,0.08038};
+  double yMC_betaS[] = {18.83,18.28,18.9,18.4,18.3,17.17,17.75,18.55,18.4,18.36,18.37,18.94,18.73,18.82,18.63,18.64,18.7,18.38,17.98,18.69,18.12,17.39};
+  double yMC_betaS_rms[]={0.3965,0.3842,0.4004,0.3879,0.3931,0.3977,0.4103,0.3936,0.3911,0.3891,0.3877,0.3982,0.3928,0.3987,0.3935,0.3923,0.392,0.3872,0.3825,0.3995,0.3808,0.3964};
+  double yMC_chi[] = {1.01,1.117,1.11,1.366,1.468,0.9478,1.43,1.273,1.507,1.155,1.301,1.152,1.274,0.9234,1.062,1.255,1.027,1.112,1.254,0.9995,1.088,1.477};
 
   double ey[ny];// ={0};
 
@@ -75,24 +87,45 @@
   {
     double deltaBetaM = (x_betaM[i]-xMC_betaM[i])/xMC_betaM[i]*100;
     double deltaBetaS = (x_betaS[i]-xMC_betaS[i])/xMC_betaS[i]*100;
+
+    double deltaBetaM_err = sqrt((x_betaM_rms[i]/x_betaM[i])*(x_betaM_rms[i]/x_betaM[i])+(xMC_betaM_rms[i]/xMC_betaM[i])*(xMC_betaM_rms[i]/xMC_betaM[i]))*100;
+    double deltaBetaS_err = sqrt((x_betaS_rms[i]/x_betaS[i])*(x_betaS_rms[i]/x_betaS[i])+(xMC_betaS_rms[i]/xMC_betaS[i])*(xMC_betaS_rms[i]/xMC_betaS[i]))*100;
+
     XdeltaBetaM[i] = deltaBetaM;
     XdeltaBetaS[i] = deltaBetaS;
+
+    XdeltaBetaM_Err[i] = deltaBetaM_err;
+    XdeltaBetaS_Err[i] = deltaBetaS_err;
   }
 
   for(int i = 0;i<ny;i++)
   {
     double deltaBetaM = (y_betaM[i]-yMC_betaM[i])/yMC_betaM[i]*100;
     double deltaBetaS = (y_betaS[i]-yMC_betaS[i])/yMC_betaS[i]*100;
+
+    double deltaBetaM_err = sqrt((y_betaM_rms[i]/y_betaM[i])*(y_betaM_rms[i]/y_betaM[i])+(yMC_betaM_rms[i]/yMC_betaM[i])*(yMC_betaM_rms[i]/yMC_betaM[i]))*100;
+    double deltaBetaS_err = sqrt((y_betaS_rms[i]/y_betaS[i])*(y_betaS_rms[i]/y_betaS[i])+(yMC_betaS_rms[i]/yMC_betaS[i])*(yMC_betaS_rms[i]/yMC_betaS[i]))*100;
+
     YdeltaBetaM[i] = deltaBetaM;
     YdeltaBetaS[i] = deltaBetaS;
+
+    YdeltaBetaM_Err[i] = deltaBetaM_err;
+    YdeltaBetaS_Err[i] = deltaBetaS_err;
   }
 
   for(int i = 0;i<nz;i++)
   {
     double deltaBetaM = (z_betaM[i]-zMC_betaM[i])/zMC_betaM[i]*100;
     double deltaBetaS = (z_betaS[i]-zMC_betaS[i])/zMC_betaS[i]*100;
+
+    double deltaBetaM_err = sqrt((z_betaM_rms[i]/z_betaM[i])*(z_betaM_rms[i]/z_betaM[i])+(zMC_betaM_rms[i]/zMC_betaM[i])*(zMC_betaM_rms[i]/zMC_betaM[i]))*100;
+    double deltaBetaS_err = sqrt((z_betaS_rms[i]/z_betaS[i])*(z_betaS_rms[i]/z_betaS[i])+(zMC_betaS_rms[i]/zMC_betaS[i])*(zMC_betaS_rms[i]/zMC_betaS[i]))*100; 
+
     ZdeltaBetaM[i] = deltaBetaM;
     ZdeltaBetaS[i] = deltaBetaS;
+
+    ZdeltaBetaM_Err[i] = deltaBetaM_err;
+    ZdeltaBetaS_Err[i] = deltaBetaS_err;
   }
 
   TGraphErrors *gz_betaM = new TGraphErrors(nz,z,z_betaM, ez, z_betaM_rms);
@@ -100,14 +133,14 @@
   gz_betaM->SetMarkerSize(1.5);
   gz_betaM->GetXaxis()->SetTitle("mm");
   gz_betaM->SetTitle("#beta_{M}");
-  gz_betaM->GetYaxis()->SetRangeUser(3,5);
+  gz_betaM->GetYaxis()->SetRangeUser(2.5,5);
 
   TGraphErrors *gz_betaS = new TGraphErrors(nz,z,z_betaS,ez, z_betaS_rms);
   gz_betaS->SetMarkerStyle(21);
   gz_betaS->SetMarkerSize(1.5);
   gz_betaS->GetXaxis()->SetTitle("mm");
   gz_betaS->SetTitle("#beta_{S}");
-  gz_betaS->GetYaxis()->SetRangeUser(12,22);
+  gz_betaS->GetYaxis()->SetRangeUser(10,22);
 
   TGraphErrors *MCgz_betaM = new TGraphErrors(nz,z,zMC_betaM, ez, zMC_betaM_rms);
   MCgz_betaM->SetMarkerStyle(24);
@@ -193,57 +226,61 @@
   TGraph *MCgx_chi = new TGraph(nx,x,xMC_chi);
   MCgx_chi->SetMarkerSize(1.5);MCgx_chi->SetMarkerStyle(24);MCgx_chi->GetYaxis()->SetRangeUser(0,2);
 ///////////////////////////////////////////////////////////
-  TCanvas *cc = new TCanvas("cc","x",1500,500);
-  cc->Divide(3,1);//2,2);
+  TCanvas *cc = new TCanvas("cc","x",1200,500);
+  cc->Divide(2,1);//3,1);
   cc->cd(1);gPad->SetGridx();gPad->SetGridy();
   gx_betaM->Draw("AP"); MCgx_betaM->Draw("P");
   cc->cd(2);gPad->SetGridx();gPad->SetGridy();
   gx_betaS->Draw("AP"); MCgx_betaS->Draw("P");
-  cc->cd(3);gPad->SetGridx();gPad->SetGridy();
-  gx_chi->Draw("AP"); MCgx_chi->Draw("P");
+//  cc->cd(3);gPad->SetGridx();gPad->SetGridy();
+//  gx_chi->Draw("AP"); MCgx_chi->Draw("P");
 
-  TCanvas *cc1 = new TCanvas("cc1","y",1500,500);
-  cc1->Divide(3,1);
+  TCanvas *cc1 = new TCanvas("cc1","y",1200,500);
+  cc1->Divide(2,1);
   cc1->cd(1);gPad->SetGridx();gPad->SetGridy();
   gy_betaM->Draw("AP"); MCgy_betaM->Draw("P");
   cc1->cd(2);gPad->SetGridx();gPad->SetGridy();
   gy_betaS->Draw("AP"); MCgy_betaS->Draw("P");
-  cc1->cd(3);gPad->SetGridx();gPad->SetGridy();
-  gy_chi->Draw("AP"); MCgy_chi->Draw("P");
+//  cc1->cd(3);gPad->SetGridx();gPad->SetGridy();
+//  gy_chi->Draw("AP"); MCgy_chi->Draw("P");
 
-  TCanvas *cc2 = new TCanvas("cc2","z",1500,500);
-  cc2->Divide(3,1);
+  TCanvas *cc2 = new TCanvas("cc2","z",1200,500);
+  cc2->Divide(2,1);
   cc2->cd(1);gPad->SetGridx();gPad->SetGridy();
   gz_betaM->Draw("AP"); MCgz_betaM->Draw("P");
   cc2->cd(2);gPad->SetGridx();gPad->SetGridy();
   gz_betaS->Draw("AP"); MCgz_betaS->Draw("P");
-  cc2->cd(3);gPad->SetGridx();gPad->SetGridy();
-  gz_chi->Draw("AP"); MCgz_chi->Draw("P");
+//  cc2->cd(3);gPad->SetGridx();gPad->SetGridy();
+//  gz_chi->Draw("AP"); MCgz_chi->Draw("P");
 
 ////////data - MC /////////////////
-  TCanvas *cc = new TCanvas("cc","",800,800);
-  cc->Divide(1,2);
-  cc->cd(1);
-  TGraph *gbetaMbiasX = new TGraph(nx,x, XdeltaBetaM);
+  TCanvas *cc = new TCanvas("ccDelta","",800,800);
+  ccDelta->Divide(1,2);
+  ccDelta->cd(1);
+  TGraphErrors *gbetaMbiasX = new TGraphErrors(nx,x, XdeltaBetaM, ex, XdeltaBetaM_Err);
   gbetaMbiasX->GetXaxis()->SetTitle("source position [mm]");
+  gbetaMbiasX->GetYaxis()->SetTitle("#Delta #beta_{M}(#times100%)");
   gbetaMbiasX->GetYaxis()->SetRangeUser(-20,20);
   gbetaMbiasX->SetMarkerStyle(25);
   gbetaMbiasX->SetMarkerColor(kRed);
-  gbetaMbiasX->SetMarkerSize(2.5);
+  gbetaMbiasX->SetLineColor(kRed);
+  gbetaMbiasX->SetMarkerSize(2);
 //  gbetaMbiasX->SetTitle("X scan");
 
-  TGraph *gbetaMbiasY = new TGraph(ny,y, YdeltaBetaM);
+  TGraphErrors *gbetaMbiasY = new TGraphErrors(ny, y, YdeltaBetaM, ey, YdeltaBetaM_Err);
   gbetaMbiasY->GetXaxis()->SetTitle("source position [mm]");
   gbetaMbiasY->SetMarkerStyle(24);
   gbetaMbiasY->SetMarkerColor(kGreen+2);
-  gbetaMbiasY->SetMarkerSize(2.5);
+  gbetaMbiasY->SetLineColor(kGreen+2);
+  gbetaMbiasY->SetMarkerSize(2);
 //  gbetaMbiasY->SetTitle("Y scan");
 
-  TGraph *gbetaMbiasZ = new TGraph(nz,z, ZdeltaBetaM);
+  TGraphErrors *gbetaMbiasZ = new TGraphErrors(nz, z, ZdeltaBetaM, ez, ZdeltaBetaM_Err);
   gbetaMbiasZ->GetXaxis()->SetTitle("source position [mm]");
   gbetaMbiasZ->SetMarkerStyle(22);
   gbetaMbiasZ->SetMarkerColor(kBlue);
-  gbetaMbiasZ->SetMarkerSize(2.5);
+  gbetaMbiasZ->SetLineColor(kBlue);
+  gbetaMbiasZ->SetMarkerSize(2.0);
 //  gbetaMbiasZ->SetTitle("Z scan");
 
   TLegend *legend1 = new TLegend(0.1,0.7,0.48,0.9);
@@ -257,26 +294,30 @@
   legend1->Draw("same");
 
   cc->cd(2);
-  TGraph *gbetaSbiasX = new TGraph(nx,x, XdeltaBetaM);
+  TGraphErrors *gbetaSbiasX = new TGraphErrors(nx, x, XdeltaBetaS, ex, XdeltaBetaS);
   gbetaSbiasX->GetXaxis()->SetTitle("source position [mm]");
+  gbetaSbiasX->GetYaxis()->SetTitle("#Delta #beta_{S}(#times100%)");
   gbetaSbiasX->GetYaxis()->SetRangeUser(-20,20);
   gbetaSbiasX->SetMarkerStyle(25);
   gbetaSbiasX->SetMarkerColor(kRed);
-  gbetaSbiasX->SetMarkerSize(2.5);
+  gbetaSbiasX->SetLineColor(kRed);
+  gbetaSbiasX->SetMarkerSize(2.0);
 //  gbetaSbiasX->SetTitle("X scan");
 
-  TGraph *gbetaSbiasY = new TGraph(ny,y, YdeltaBetaM);
+  TGraphErrors *gbetaSbiasY = new TGraphErrors(ny, y, YdeltaBetaS, ey, YdeltaBetaS_Err);
   gbetaSbiasY->GetXaxis()->SetTitle("source position [mm]");
   gbetaSbiasY->SetMarkerStyle(24);
   gbetaSbiasY->SetMarkerColor(kGreen+2);
-  gbetaSbiasY->SetMarkerSize(2.5);
-//  gbetaSbiasY->SetTitle("Y scan");
+  gbetaSbiasY->SetLineColor(kGreen+2);
+  gbetaSbiasY->SetMarkerSize(2.0);
+  //  gbetaSbiasY->SetTitle("Y scan");
 
-  TGraph *gbetaSbiasZ = new TGraph(nz,z, ZdeltaBetaM);
+  TGraphErrors *gbetaSbiasZ = new TGraphErrors(nz, z, ZdeltaBetaS, ez, ZdeltaBetaS_Err);
   gbetaSbiasZ->GetXaxis()->SetTitle("source position [mm]");
   gbetaSbiasZ->SetMarkerStyle(22);
   gbetaSbiasZ->SetMarkerColor(kBlue);
-  gbetaSbiasZ->SetMarkerSize(2.5);
+  gbetaSbiasZ->SetLineColor(kBlue);
+  gbetaSbiasZ->SetMarkerSize(2.0);
 //  gbetaSbiasZ->SetTitle("Z scan");
 
   TLegend *legend2 = new TLegend(0.1,0.7,0.48,0.9);
@@ -288,8 +329,5 @@
   gbetaSbiasY->Draw("P");
   gbetaSbiasZ->Draw("P");
   legend1->Draw("same");
-
-
-
 
 }

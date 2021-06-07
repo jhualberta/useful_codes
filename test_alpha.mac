@@ -1,0 +1,32 @@
+/rat/physics_list/OmitMuonicProcesses true
+/rat/physics_list/OmitHadronicProcesses true
+
+/rat/db/set DETECTOR geo_file "geo/snoplusnative.geo"
+
+/rat/db/load scint_detstate/PMT_DQXX_SCINT.ratdb
+/rat/db/load scint_detstate/DAQ_RUN_LEVEL_SCINT.ratdb
+/rat/db/load scint_detstate/NOISE_RUN_INTEGRATED_SCINT.ratdb
+
+#To simulate noise using the per-pmt rates:
+/rat/db/set NOISE_MC noise_flag 2
+#To read the per-pmt noise rates from the NOISE_RUN_INTEGRATED table:
+/rat/db/set NOISE_MC integ_noise_flag 1
+
+/run/initialize
+##########EVENT LOOP############
+/rat/proc frontend
+/rat/proc trigger
+/rat/proc eventbuilder
+/rat/proc calibratePMT
+/rat/proc scintFitter
+
+/rat/proclast outroot
+/rat/procset file "Fit_alpha.root"
+
+##########EVENT LOOP############
+/generator/add combo gun:fill:poisson
+/generator/vtx/set alpha 0 0 0 7.68  
+/generator/pos/set 0 0 0
+
+/rat/run/start
+exit
