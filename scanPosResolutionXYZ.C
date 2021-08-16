@@ -286,7 +286,7 @@
   }
   TCanvas *c1 = new TCanvas("c1","resolution",800,600);
   c1->cd();
-  TGraph *gx_bias = new TGraph(nx,x,sum_sigmaP2_scanX);
+  TGraph *gx_bias = new TGraph(nx,x,sum_sigmaP2_scanX);// resolution systematics!
   gx_bias->GetXaxis()->SetTitle("source position [mm]");
   //gx_bias->GetYaxis()->SetTitle("Data^{2}-MC^{2}");
   gx_bias->SetMarkerStyle(25);
@@ -351,6 +351,8 @@
   legend1->AddEntry(gx_bias,"along X-axis","p");
   legend1->AddEntry(gy_bias,"along Y-axis","p");
   legend1->AddEntry(gz_bias,"along Z-axis","p");
+  gx_shift->Draw("AP"); gy_shift->Draw("P");gz_shift->Draw("P");
+  legend1->Draw("same");
 
   TCanvas *c001 = new TCanvas("c001","shifts",900,600);
   gx_shift->Draw("AP");
@@ -417,7 +419,7 @@
   gxMC_sigmaP->SetMarkerSize(1.6);
   gx_sigmaP->Draw("AP");
   gxMC_sigmaP->Draw("P");
-  gx_sigmaP->GetXaxis()->SetTitle("X scan, source position x [mm]");
+  gx_sigmaP->GetXaxis()->SetTitle("x scan, source position x [mm]");
   gx_sigmaP->GetYaxis()->SetRangeUser(100,330);
   gx_sigmaP->GetYaxis()->SetTitle("#sigma_{P} [mm]");
 

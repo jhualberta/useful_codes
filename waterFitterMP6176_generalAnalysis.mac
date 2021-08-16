@@ -1,0 +1,81 @@
+/rat/physics_list/OmitMuonicProcesses true
+/rat/physics_list/OmitHadronicProcesses true
+
+/rat/inroot/load_default # a file parameter needs to be passed here
+
+/rat/db/set DETECTOR geo_file "geo/snoplusnative_water.geo"
+
+/run/initialize
+
+##########EVENT LOOP############
+
+#/rat/proc count
+#/rat/procset update 1000
+
+# Conditional logic for analysis:
+# 1. Reconstruct all data that passes the reconstruction cuts
+/rat/proc/if trigTypeSelector
+  # We do not want to process events with the PED trigger - ie the Nhit monitor
+  /rat/procset trigType "Pedestal"
+# Additionally, EXTA events are from optical calibration sources. Don't reconstruct.  
+  /rat/procset trigType "EXTASY"
+/rat/proc/else
+  # Conditional logic for reconstruction - only reconstruct events with physics triggers
+  # see du/TrigBits.cc for definitions
+  /rat/proc/if trigTypeSelector
+    /rat/procset trigType "N100Low"
+    /rat/procset trigType "N100Med"
+    /rat/procset trigType "N100High"
+    /rat/procset trigType "N20"
+    /rat/procset trigType "N20LB"
+    /rat/procset trigType "EXT2"
+    /rat/procset trigType "EXT3"
+    /rat/procset trigType "EXT4"
+    /rat/procset trigType "EXT5"
+    /rat/procset trigType "EXT6"
+    /rat/procset trigType "EXT7"
+    /rat/procset trigType "EXT8PulseAsy"
+    /rat/procset trigType "ESHigh"
+  
+    # Conditional logic for reconstruction - only certain types of instrumental + physics events
+    # (does nothing currently - set to nothingcut)
+    /rat/proc/if dataCleaningCut
+    /rat/procset mask "reconstruction_filter"
+  
+	# Condition logic with defined upper and lower values for time window and nhit selections on Prompt and Delayed Events
+	# Selection Mode 3 gives OKTRUE for any event above NhitFirst, and events above NhitSecond within [LowWindow,TimeWindow[ of Prompt
+
+	   /rat/proc/if CoincProc
+		/rat/procset TimeWindow 1000.
+		/rat/procset LowWindow  0.
+		/rat/procset NhitFirst 20
+		/rat/procset NhitSecond  0
+		/rat/procset SelectionMode 3
+    
+        # These are the events we want to reconstruct (selected triggers, instrumentals, Nhit>=20)
+        /rat/proc waterFitterMP
+
+        # Also run PEnergy on events above 26 NHit
+        /rat/proc/if nhitCut
+        /rat/procset nhit 26
+        /rat/procset clean 1
+          /rat/proc fitter
+          /rat/procset name "penergy"
+          /rat/procset seed "waterFitterMP"
+          /rat/procset method "pEnergy"
+	  /rat/procset method.optionPkg "stdWater"
+	  /rat/procset selector "null"   
+          /rat/procset optimiser "minuit"
+        /rat/proc/endif     # PEnergy if NHit > 26
+
+      /rat/proc/endif       # CoincProc
+    /rat/proc/endif         # instrumental selection
+  /rat/proc/endif           # physics trigger selection
+/rat/proc/endif             # not ped and EXTASY events
+
+/rat/proc outroot         # a file parameter needs to be passed here
+
+##########EVENT LOOP############
+/rat/inroot/read
+
+exit

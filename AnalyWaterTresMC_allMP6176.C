@@ -25,7 +25,7 @@
 using namespace std;
 void AnalyWaterTresMC_allMP6176()
 {
-  const char* filename = "WaterMP6176general_nhit15_Analysis_r0000200004_s000_p010.root";
+  const char* filename = "FitterMP6176_Water_5MeV_1E4evt_iso_center.root";
   const RAT::DU::PMTInfo& pmtInfo = RAT::DU::Utility::Get()->GetPMTInfo();
   // cannot be used in 6.17.3
   RAT::DU::LightPathCalculator lightPath = RAT::DU::Utility::Get()->GetLightPathCalculator(); // To calculate the light's path
@@ -119,11 +119,20 @@ void AnalyWaterTresMC_allMP6176()
   tree->Branch("dirFOM2",&dirFOM2,"dirFOM2/D");
   tree->Branch("dirscaleLogL",&dirscaleLogL,"dirscaleLogL/D"); 
   tree->Branch("prompt_cut",&prompt_cut,"prompt_cut/D");
+   
+  double mcPosx, mcPosy, mcPosz, mcDirx, mcDiry, mcDirz, energyMC;
+  tree->Branch("mcPosx",&mcPosx, "mcPosx/D");
+  tree->Branch("mcPosy",&mcPosy, "mcPosy/D");
+  tree->Branch("mcPosz",&mcPosz, "mcPosz/D");
+  tree->Branch("mcDirx",&mcDirx, "mcDirx/D");
+  tree->Branch("mcDiry",&mcDiry, "mcDiry/D");
+  tree->Branch("mcDirz",&mcDirz, "mcDirz/D");
+  tree->Branch("energyMC",&energyMC,"energyMC/D");
 
   //char filename[1500];
 
   Int_t i=0;
-  Int_t TriggerType;
+  Int_t TriggerType=0;
   Int_t nentries=0;
   ULong64_t bitword;
 
@@ -177,7 +186,7 @@ void AnalyWaterTresMC_allMP6176()
                fecdID = calpmts.GetFECDPMT(ipmt).GetID();pvfecd->push_back(fecdID);
              }
 //             // MC
-             TVector3 pos_mc =mc.GetMCParticle(0).GetPosition();
+             TVector3 pos_mc = mc.GetMCParticle(0).GetPosition();
              TVector3 u_mc =  mc.GetMCParticle(0).GetMomentum().Unit();
              bool checkFitExist = ev.FitResultExists(fitName);
 	     nhits= ev.GetNhitsCleaned();
@@ -232,6 +241,10 @@ void AnalyWaterTresMC_allMP6176()
                       medianProb    = fResult.GetFOM("EnergyMedianProb");
                       medianDevHit  = fResult.GetFOM("EnergyMedianDevHit");
                       medianDev     = fResult.GetFOM("EnergyMedianDev");
+////////// for MC
+                      mcPosx = pos_mc.X(), mcPosy = pos_mc.Y(), mcPosz = pos_mc.Z();
+		      energyMC = mc.GetMCParticle(0).GetMomentum().Mag(); 
+                      mcDirx = u_mc.X(), mcDiry = u_mc.Y(), mcDirz = u_mc.Z();
 
 		      if( !ev.ClassifierResultExists("ITR:waterFitterMP") ) continue;
                       if ( !ev.GetClassifierResult( "ITR:waterFitterMP" ).GetValid() ) continue;
