@@ -75,14 +75,6 @@
   const char* filename = "Merged_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterSolar_NueRun_r200004to207718.root";
 //Merged_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterSolar_NumuRun_r200004to207718.root";
 //Merged_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterSolar_NueRun_r200004to207718.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterBi214_AvRun_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterBi214_ExwaterRun_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterBi214Run_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterSolar_Nue_ExwaterRun_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterSolar_NueRun_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterTl208_AvRun_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterTl208_ExwaterRun_r200004to203602_s0_p0.root
-// Merged_MP_ExtractTres_WaterMP6176_nhit15_GeneralPhysicsMC_WaterTl208Run_r200004to203602_s0_p0.root
   TFile *fMC = new TFile(filename);
   TTree *Tdata = (TTree*)fMC->Get("T");
   UInt_t nhits;
@@ -120,14 +112,14 @@
   Tdata->SetBranchAddress("medianDev", &medianDev);
   Tdata->SetBranchAddress("posxmc", &posxmc);
   Tdata->SetBranchAddress("posymc", &posymc);
-  Tdata->SetBranchAddress("posymc", &poszmc);
+  Tdata->SetBranchAddress("poszmc", &poszmc);
   Tdata->SetBranchAddress("dirxmc", &dirxmc);
   Tdata->SetBranchAddress("dirymc", &dirymc);
   Tdata->SetBranchAddress("dirzmc", &dirzmc);
   Tdata->SetBranchAddress("energymc", &energymc);
 
   TString ffname0(filename);
-  ffname0 = "GetSolarMC_smearShiftYup_5to15MeV_"+ffname0;
+  ffname0 = "GetSolarMC_smearDirDown_5to15MeV_"+ffname0;
   // GetSolarMC_smearBeta14up_5to15MeV_
   // GetSolarMC_smearBeta14down_5to15MeV_
   // GetSolarMC_smearDirScaleUp_5to15MeV_
@@ -173,7 +165,7 @@
   tree->Branch("energymc", &energymc);
 
   //  tree->Branch("gcosPMT",&gCosPMTfit);
-  TRandom3 rtheta;
+  TRandom3 rtheta, rgaus;
   double timeCut1 = -5, timeCut2 = 1;//time res cuts
   for(int i =0;i<Tdata->GetEntries();i++)
   {
@@ -195,21 +187,20 @@
     // original transformation, not used: costheta' = 1+(costheta-1)*(1+delta),  ///
     // if doing so, must be -0.013/+0.101!!!
     */
+    double smear_deltaThetaUp = 0.013, smear_deltaThetaDown = -0.101;
+    // double deltaTheta = smear_deltaThetaUp;
+    double deltaTheta = smear_deltaThetaDown;
 
-    double deltaTheta = 0.101;
-    /// double deltaTheta = -0.013;
-
-    double deltaTheta = 0.013; // up, not change sign
-    //double deltaTheta = -0.101; // down, not change sign
-
-    // /* ---------- Print out ---------*/
-    // // cout<<"before = "<<cosThetaToSun<<endl;
-    /// cosThetaToSun = -1+(cosThetaToSun+1)*(1+deltaTheta); // change sign
-    cosThetaToSun = 1+(cosThetaToSun-1)*(1+deltaTheta); // don't change sign !!!!
-    /// // // cout<<"after = "<<cosThetaToSun<<endl;
+    // // /* ---------- Print out ---------*/
+    // // // cout<<"before = "<<cosThetaToSun<<endl;
+    cosThetaToSun = 1+(cosThetaToSun-1)/(1+deltaTheta);
+    /*
+    // ///// cosThetaToSun = 1+(cosThetaToSun-1)*(1+deltaTheta); // old, not used
+    // ///// // // cout<<"after = "<<cosThetaToSun<<endl;
+    */
 
     if(cosThetaToSun>1) {
-       cosThetaToSun = rtheta.Uniform(-1,1);
+       cosThetaToSun = 0.99;//rtheta.Uniform(-1,1);
        cout<<">+1, randomize "<<cosThetaToSun<<endl;
     }
     if(cosThetaToSun<-1) {
@@ -217,7 +208,7 @@
        cout<<"<-1, randomize "<<cosThetaToSun<<endl;
     }
 
-    ///!!! smearing position scale
+    ///!!!!! smearing position scale
     // up: (0.07/100,0.02/100,0.08/100) 
     // TVector3 scaleP(0.07/100,0.02/100,0.08/100); 
     /// TVector3 scaleP(-0.06/100,-0.07/100,-0.01/100);
@@ -226,7 +217,7 @@
     // posy = posy*(1+scaleP.Y()); 
     // posz = posz*(1+scaleP.Z()); 
 
-    /**!!! smearing position shifts, one by one !!!**/
+    /**!!!!! smearing position shifts, one by one !!!**/
 //    posx = posx + 6.48;
 //    posy = posy + 6.13;
 //    posz = posz + 6.71;
@@ -236,15 +227,16 @@
 //    posz = posz - 4.82;
 
     /// !!!!! smearing energy scale
-    //double eScale = +2.0/100;
-    // double eScale = -2.0/100;
-    //energy = (1+eScale)*energy;
+    // double eScale = +1.0/100;
+    // // double eScale = -1.0/100;
+    // energy = (1+eScale)*energy;
 
     /// !!!!! smearing energy resolution
-    // double eResol = 0.011;
-    // double sigma = sqrt(energy*((1+eResol)*(1+eResol)-1));
-    // energy = energy + TMath::Gaus(0,sigma);
-    // energy = energy - TMath::Gaus(0,sigma);
+    //double eResol = 0.037;
+    //// cout<<"Eold "<<energy<<endl;
+    //double sigma = sqrt(energy*((1+eResol)*(1+eResol)-1));
+    //energy = rgaus.Gaus(energy, sigma);
+    //// cout<<"Enew "<<energy<<endl; // energy = energy - TMath::Gaus(0,sigma);
 
     if(nhits>20 && energy>=5 && energy<=15 && sqrt(posx**2+posy**2+(posz-108)**2)<5500 && itr>0.55 && beta14>-0.12 && beta14<0.95 )
     {

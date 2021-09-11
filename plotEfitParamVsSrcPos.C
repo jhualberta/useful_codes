@@ -58,17 +58,22 @@
   TCanvas *c1 = new TCanvas("c1", "E resol", 800,600);
   TGraphErrors *g1 = new TGraphErrors(npoints, srcRho, Eresol_data, dumy_xErr, EresolErr_data);
   g1->GetXaxis()->SetRangeUser(0,5900);
-  g1->GetYaxis()->SetRangeUser(0,0.8);
+  g1->GetYaxis()->SetRangeUser(0.15,0.6);
   g1->GetXaxis()->SetTitle("Source radius [mm]");
   g1->GetYaxis()->SetTitle("b [#sqrt{MeV}]");
-  g1->SetMarkerStyle(24);
-  g1->SetMarkerColor(kRed);
+  g1->SetMarkerStyle(24);g1->SetMarkerSize(2.);
+  g1->SetMarkerColor(kRed);g1->SetLineColor(kRed);
   g1->Draw("AP");
-
+ 
   TGraphErrors *g2 = new TGraphErrors(npoints, srcRho, Eresol_mc, dumy_xErr, EresolErr_mc);
-  g2->SetMarkerStyle(25);
-  g2->SetMarkerColor(kBlue);
+  g2->SetMarkerStyle(25);g2->SetMarkerSize(2.);
+  g2->SetMarkerColor(kBlue);g2->SetLineColor(kBlue);
   g2->Draw("P");
+
+  TLegend *legend = new TLegend(0.1,0.7,0.35,0.9);
+  legend->AddEntry(g1,"data","lep");
+  legend->AddEntry(g2,"MC","lep");
+  legend->Draw("same");
 
   TCanvas *c2 = new TCanvas("c2", "E scale", 800,600);
   TGraphErrors *g3 = new TGraphErrors(npoints, srcRho, Escale_data, dumy_xErr, EscaleErr_data);
@@ -76,15 +81,18 @@
   g3->GetYaxis()->SetRangeUser(-0.06,0.10);
   g3->GetXaxis()->SetTitle("Source radius [mm]");
   g3->GetYaxis()->SetTitle("#delta_{E}");
-  g3->SetMarkerStyle(24);
-  g3->SetMarkerColor(kRed);
+  g3->SetMarkerStyle(24);g3->SetMarkerSize(2.);
+  g3->SetMarkerColor(kRed);g3->SetLineColor(kRed);
   g3->Draw("AP");
 
   TGraphErrors *g4 = new TGraphErrors(npoints, srcRho, Escale_mc, dumy_xErr, EscaleErr_mc);
-  g4->SetMarkerStyle(25);
-  g4->SetMarkerColor(kBlue);
+  g4->SetMarkerStyle(25);g4->SetMarkerSize(2.);
+  g4->SetMarkerColor(kBlue);g4->SetLineColor(kBlue);
   g4->Draw("P");
-
-
+ 
+  TLegend *legend1 = new TLegend(0.1,0.7,0.35,0.9);
+  legend1->AddEntry(g3,"data","lep");
+  legend1->AddEntry(g4,"MC","lep");
+  legend1->Draw("same");
 
 }
