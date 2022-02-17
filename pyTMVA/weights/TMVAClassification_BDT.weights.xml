@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<MethodSetup Method="BDT::BDT">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.2.0 [262656]"/>
+    <Info name="ROOT Release" value="5.34/36 [336420]"/>
+    <Info name="Creator" value="vphys"/>
+    <Info name="Date" value="Mon Mar  8 15:00:13 2021"/>
+    <Info name="Host" value="Linux GL504GW 4.18.0-25-generic #26~18.04.1-Ubuntu SMP Thu Jun 27 07:28:31 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux"/>
+    <Info name="Dir" value="/media/vphys/seagate/SNOPdata/neckFillWaterData/files_MCsolar/pyTMVA"/>
+    <Info name="Training events" value="17883"/>
+    <Info name="TrainingTime" value="5.40988445e-02"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="No">None</Option>
+    <Option name="H" modified="Yes">False</Option>
+    <Option name="CreateMVAPdfs" modified="No">False</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="No">False</Option>
+    <Option name="NTrees" modified="Yes">1</Option>
+    <Option name="MaxDepth" modified="Yes">3</Option>
+    <Option name="MinNodeSize" modified="No">5%</Option>
+    <Option name="nCuts" modified="Yes">1</Option>
+    <Option name="BoostType" modified="Yes">AdaBoost</Option>
+    <Option name="AdaBoostR2Loss" modified="No">quadratic</Option>
+    <Option name="UseBaggedBoost" modified="No">False</Option>
+    <Option name="Shrinkage" modified="No">1.000000e+00</Option>
+    <Option name="AdaBoostBeta" modified="Yes">5.000000e-01</Option>
+    <Option name="UseRandomisedTrees" modified="No">False</Option>
+    <Option name="UseNvars" modified="No">3</Option>
+    <Option name="UsePoissonNvars" modified="No">True</Option>
+    <Option name="BaggedSampleFraction" modified="No">6.000000e-01</Option>
+    <Option name="UseYesNoLeaf" modified="No">True</Option>
+    <Option name="NegWeightTreatment" modified="No">inverseboostnegweights</Option>
+    <Option name="Css" modified="No">1.000000e+00</Option>
+    <Option name="Cts_sb" modified="No">1.000000e+00</Option>
+    <Option name="Ctb_ss" modified="No">1.000000e+00</Option>
+    <Option name="Cbb" modified="No">1.000000e+00</Option>
+    <Option name="NodePurityLimit" modified="No">5.000000e-01</Option>
+    <Option name="SeparationType" modified="Yes">giniindex</Option>
+    <Option name="DoBoostMonitor" modified="No">False</Option>
+    <Option name="UseFisherCuts" modified="No">False</Option>
+    <Option name="MinLinCorrForFisher" modified="No">8.000000e-01</Option>
+    <Option name="UseExclusiveVars" modified="No">False</Option>
+    <Option name="DoPreselection" modified="No">False</Option>
+    <Option name="SigToBkgFraction" modified="No">1.000000e+00</Option>
+    <Option name="PruneMethod" modified="Yes">nopruning</Option>
+    <Option name="PruneStrength" modified="No">0.000000e+00</Option>
+    <Option name="PruningValFraction" modified="No">5.000000e-01</Option>
+    <Option name="nEventsMin" modified="Yes">0</Option>
+    <Option name="UseBaggedGrad" modified="No">False</Option>
+    <Option name="GradBaggingFraction" modified="No">6.000000e-01</Option>
+    <Option name="UseNTrainEvents" modified="No">0</Option>
+    <Option name="NNodesMax" modified="No">0</Option>
+  </Options>
+  <Variables NVar="8">
+    <Variable VarIndex="0" Expression="itr" Label="itr" Title="itr" Unit="" Internal="itr" Type="F" Min="5.50000012e-01" Max="1.00000000e+00"/>
+    <Variable VarIndex="1" Expression="beta14" Label="beta14" Title="beta14" Unit="" Internal="beta14" Type="F" Min="-1.19375154e-01" Max="9.48311508e-01"/>
+    <Variable VarIndex="2" Expression="klDiv" Label="klDiv" Title="klDiv" Unit="" Internal="klDiv" Type="F" Min="-6.26576662e+00" Max="2.71190243e+01"/>
+    <Variable VarIndex="3" Expression="energy" Label="energy" Title="energy" Unit="" Internal="energy" Type="F" Min="4.00000477e+00" Max="4.99987078e+00"/>
+    <Variable VarIndex="4" Expression="udotR" Label="udotR" Title="udotR" Unit="" Internal="udotR" Type="F" Min="-2.59699649e-03" Max="7.96012208e-03"/>
+    <Variable VarIndex="5" Expression="Utest" Label="Utest" Title="Utest" Unit="" Internal="Utest" Type="F" Min="3.78855705e-01" Max="9.88136828e-01"/>
+    <Variable VarIndex="6" Expression="Gtest" Label="Gtest" Title="Gtest" Unit="" Internal="Gtest" Type="F" Min="2.58677285e-02" Max="1.77793944e+00"/>
+    <Variable VarIndex="7" Expression="scaleLogL" Label="scaleLogL" Title="scaleLogL" Unit="" Internal="scaleLogL" Type="F" Min="1.00982552e+01" Max="1.21412506e+01"/>
+  </Variables>
+  <Spectators NSpec="0"/>
+  <Classes NClass="2">
+    <Class Name="Signal" Index="0"/>
+    <Class Name="Background" Index="1"/>
+  </Classes>
+  <Transformations NTransformations="0"/>
+  <MVAPdfs/>
+  <Weights NTrees="1" AnalysisType="0">
+    <BinaryTree type="DecisionTree" boostWeight="4.4500750662479210e-01" itree="0">
+      <Node pos="s" depth="0" NCoef="0" IVar="3" Cut="4.4999380111694336e+00" cType="0" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="5.0000000000000000e-01" nType="0">
+        <Node pos="l" depth="1" NCoef="0" IVar="1" Cut="4.1445627808570862e-01" cType="0" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="7.4729478359222412e-01" nType="0">
+          <Node pos="l" depth="2" NCoef="0" IVar="-1" Cut="1.1107379913330078e+01" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="8.5037946701049805e-01" nType="1"/>
+          <Node pos="r" depth="2" NCoef="0" IVar="0" Cut="7.7941179275512695e-01" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="5.9506928920745850e-01" nType="0">
+            <Node pos="l" depth="3" NCoef="0" IVar="-1" Cut="0.0000000000000000e+00" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="7.3018372058868408e-01" nType="1"/>
+            <Node pos="r" depth="3" NCoef="0" IVar="-1" Cut="0.0000000000000000e+00" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="4.7542029619216919e-01" nType="-1"/>
+          </Node>
+        </Node>
+        <Node pos="r" depth="1" NCoef="0" IVar="1" Cut="4.1446816921234131e-01" cType="0" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="3.8116559386253357e-01" nType="0">
+          <Node pos="l" depth="2" NCoef="0" IVar="7" Cut="1.1171614646911621e+01" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="5.2454525232315063e-01" nType="0">
+            <Node pos="l" depth="3" NCoef="0" IVar="-1" Cut="0.0000000000000000e+00" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="6.9223493337631226e-01" nType="1"/>
+            <Node pos="r" depth="3" NCoef="0" IVar="-1" Cut="0.0000000000000000e+00" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="4.3336743116378784e-01" nType="-1"/>
+          </Node>
+          <Node pos="r" depth="2" NCoef="0" IVar="-1" Cut="1.1107763290405273e+01" cType="1" res="-9.9000000000000000e+01" rms="0.0000000000000000e+00" purity="2.4262273311614990e-01" nType="-1"/>
+        </Node>
+      </Node>
+    </BinaryTree>
+  </Weights>
+</MethodSetup>
