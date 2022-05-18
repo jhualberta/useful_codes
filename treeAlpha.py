@@ -20,7 +20,7 @@ PI = np.pi
 
 print "now processing %s\n"%(sys.argv[1])
 file0 = str(sys.argv[1])
-fout = TFile("My_"+file0,"RECREATE");
+fout = TFile("TreeNew_"+file0,"RECREATE");
 ## print "will read from files %s and write to file %s\n"%(sys.argv[1],sys.argv[2])
 server = couchdb.Server("https://ddaq3.snolab.ca:6984")
 db = server["deapdb"]
@@ -28,15 +28,16 @@ Dir=sys.argv[1]
 AllFiles=glob.glob(Dir)
 AllFiles = sorted(AllFiles)
 
-tree1 = TTree("T1","cluster1")
-tree2 = TTree("T2","cluster2")
-tree3 = TTree("T3","cluster3")
+tree1 = TTree("T1","single_cluster")
+tree2 = TTree("T2","double_cluster")
+tree3 = TTree("T3","triple_cluster")
 
 ### these are for each event, common for all cluster
-evtID = array('i',[0])
+evtID = array('l',[0])
 evtx = array('f',[0])
 evty = array('f',[0])
 evtz = array('f',[0])
+ncluster = array('i',[0])
 qpeVal = array('f',[0]) #unsigned double 
 fpromptVal = array('f',[0])
 
@@ -69,6 +70,7 @@ tree1.Branch("fprompt", fpromptVal, "fprompt/F")
 tree1.Branch("evtx", evtx, "evtx/F")
 tree1.Branch("evty", evty, "evty/F")
 tree1.Branch("evtz", evtz, "evtz/F")
+tree1.Branch("ncluster",ncluster,"ncluster/I")
 tree1.Branch("nPMTs",nPMTs1, "nPMTs/I")
 tree1.Branch("pmtPhi", pmtPhi1, "pmtPhi[nPMTs]/F")
 tree1.Branch("pmtCosTheta", pmtCosTheta1, "pmtCosTheta[nPMTs]/F")
@@ -81,9 +83,10 @@ tree2.Branch("fprompt", fpromptVal, "fprompt/F")
 tree2.Branch("evtx", evtx, "evtx/F")
 tree2.Branch("evty", evty, "evty/F")
 tree2.Branch("evtz", evtz, "evtz/F")
+tree2.Branch("ncluster",ncluster,"ncluster/I")
 tree2.Branch("nPMTs",nPMTs2, "nPMTs/I")
-tree1.Branch("pmtPhi", pmtPhi2, "pmtPhi[nPMTs]/F")
-tree1.Branch("pmtCosTheta", pmtCosTheta2, "pmtCosTheta[nPMTs]/F")
+tree2.Branch("pmtPhi", pmtPhi2, "pmtPhi[nPMTs]/F")
+tree2.Branch("pmtCosTheta", pmtCosTheta2, "pmtCosTheta[nPMTs]/F")
 tree2.Branch("pmttime", pmttime2, "pmttime[nPMTs]/F")
 tree2.Branch("charge", charge2, "charge[nPMTs]/F")
 
@@ -93,6 +96,7 @@ tree3.Branch("fprompt", fpromptVal, "fprompt/F")
 tree3.Branch("evtx", evtx, "evtx/F")
 tree3.Branch("evty", evty, "evty/F")
 tree3.Branch("evtz", evtz, "evtz/F")
+tree3.Branch("ncluster",ncluster,"ncluster/I")
 tree3.Branch("nPMTs",nPMTs3, "nPMTs/I")
 tree3.Branch("pmtPhi", pmtPhi3, "pmtPhi[nPMTs]/F")
 tree3.Branch("pmtCosTheta", pmtCosTheta3, "pmtCosTheta[nPMTs]/F")
@@ -102,12 +106,12 @@ tree3.Branch("charge", charge3, "charge[nPMTs]/F")
 H2_CosTheta_Phi = TH2F("H2_CosTheta_Phi", "Pmt Charge; #phi(rad) ; Cos(#theta)", 100  , 0 , 6, 100 , -1, 1);
 T2_CosTheta_Phi = TH2D("T2_CosTheta_Phi", "PmtTime;    #phi(rad) ; Cos(#theta)", 100  , 0 , 6, 100 , -1, 1);
 ### PMT positions of the cluster
-Cluster_CosTheta_Phi1 = TH2D("Cluster_CosTheta_Phi1",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
-Cluster_CosTheta_Phi2 = TH2D("Cluster_CosTheta_Phi2",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
-Cluster_CosTheta_Phi3 = TH2D("Cluster_CosTheta_Phi3",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
-Time_CosTheta_Phi1 = TH2D("Time_CosTheta_Phi1",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
-Time_CosTheta_Phi2 = TH2D("Time_CosTheta_Phi2",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
-Time_CosTheta_Phi3 = TH2D("Time_CosTheta_Phi3",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
+Cluster_CosTheta_Phi1 = TH2D("Charge_CosTheta_PhiCluster1",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
+Cluster_CosTheta_Phi2 = TH2D("Charge_CosTheta_PhiCluster2",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
+Cluster_CosTheta_Phi3 = TH2D("Charge_CosTheta_PhiCluster3",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
+Time_CosTheta_Phi1 = TH2D("Time_CosTheta_PhiCluster1",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
+Time_CosTheta_Phi2 = TH2D("Time_CosTheta_PhiCluster2",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
+Time_CosTheta_Phi3 = TH2D("Time_CosTheta_PhiCluster3",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
 
 ### cluster positions/no weighting
 ClusterPos_CosTheta_Phi1 = TH2D("ClusterPos_CosTheta_Phi1",";#phi(rad) ; Cos(#theta)" ,100, 0, 6, 100, -1, 1);
@@ -180,8 +184,8 @@ for Files in AllFiles:
 	File = TFile(Files);                    data = File.Get("T_satCorr");#TTree
 	nentries = data.GetEntries();           update = int(nentries/10);
         for event in range(nentries):#range (nentries)
-                if (event+1)%update == 0:
-                        print(event+1, "analyzed...")
+                #if (event+1)%update == 0:
+                #       print(event+1, "analyzed...")
 		data.GetEntry(event);    DS = data.ds;#(required)
 		if DS.GetTSCount() > 0 and DS.GetEVCount() > 0 and DS.GetCALCount() > 0:
 			TS = DS.GetTS(0); EV = DS.GetEV(0); CAL = DS.GetCAL(0);
@@ -257,23 +261,25 @@ for Files in AllFiles:
                         print("cluster1 PMTid",cluster1)
                         qcluster1 = qc+charges[id1]
                         print("total Q cluster1",qcluster1)
-                        ncluster = 0
+                        count_ncluster = 0
                         if qcluster1 > 100:
-				ncluster = 1 ## count for single cluster
+				count_ncluster = 1 ## count for single cluster
+                                ncluster[0] = count_ncluster
                                 ClusterPos_CosTheta_Phi2.Fill(Phi[id1],CosTheta[id1]) ## PMT pos, no weighting
                                 nPMTs1[0] = len(cluster1)
                                 kk = 0
-                                for pmtid in cluster1:
-                                    print pmtid, nPMTs1, Phi[pmtid], kk
+                                #for pmtid in cluster1:
+                                for kk in xrange(nPMTs1[0]):
+                                    pmtid = cluster1[kk]
+                                    #print pmtid, nPMTs1, Phi[pmtid], kk
                                     pmtPhi1[kk] = Phi[pmtid]
                                     pmtCosTheta1[kk] = CosTheta[pmtid]
                                     pmttime1[kk] = pmtTime[pmtid] 
                                     charge1[kk] = charges[pmtid]
-                                    kk = kk + 1
-                                tree1.Fill()
+                                #tree1.Fill()
                                 # continue
                         else:
-				ncluster = 0
+				count_ncluster = 0
                                 # continue
 			for pmtid in cluster1:
 				charges[pmtid] = 0 ## find the cluster1 and setting these PMTs to 0
@@ -305,18 +311,20 @@ for Files in AllFiles:
 			qcluster2 = qc + charges[id2]
 			print("total Q cluster2",qcluster2)
 			if qcluster2 > 100:
-				ncluster = ncluster + 1 ## count for double cluster
+				count_ncluster = count_ncluster + 1 ## count for double cluster
+                                ncluster[0] = count_ncluster
                                 ClusterPos_CosTheta_Phi2.Fill(Phi[id2],CosTheta[id2]) ## PMT pos, no weighting
                                 nPMTs2[0] = len(cluster2)
                                 kk = 0
-                                for pmtid in cluster2:
-                                    print pmtid, nPMTs2[0], Phi[pmtid], kk
+                                #for pmtid in cluster2:
+                                for kk in xrange(nPMTs2[0]):
+                                    pmtid = cluster2[kk]
                                     pmtPhi2[kk] = Phi[pmtid]
                                     pmtCosTheta2[kk] = CosTheta[pmtid]
                                     pmttime2[kk] = pmtTime[pmtid]
                                     charge2[kk] = charges[pmtid]
-                                    kk = kk + 1
-                                tree2.Fill()
+                                    #print pmtid, nPMTs2[0], pmtCosTheta2[kk], kk
+                                #tree2.Fill()
 
                         for i in cluster2:
 				charges[i] = 0 ## find the cluster1 and setting these PMTs to 0
@@ -334,43 +342,47 @@ for Files in AllFiles:
 			qcluster3 = qc + charges[id3]
 			print("total Q cluster3",qcluster3)
 			if qcluster3 > 100:
-				ncluster = ncluster + 1 ## count for tripple cluster
+				count_ncluster = count_ncluster + 1 ## count for tripple cluster
+                                ncluster[0] = count_ncluster
                                 ClusterPos_CosTheta_Phi3.Fill(Phi[id3],CosTheta[id3])
                                 nPMTs3[0] = len(cluster3)
                                 kk = 0
-                                for pmtid in cluster3:
-                                    print pmtid, nPMTs3[0], Phi[pmtid], kk
+                                #for pmtid in cluster3:
+                                for kk in xrange(nPMTs3[0]):
+                                    pmtid = cluster3[kk]
                                     pmtPhi3[kk] = Phi[pmtid]
                                     pmtCosTheta3[kk] = CosTheta[pmtid]
                                     pmttime3[kk] = pmtTime[pmtid]
                                     charge3[kk] = charges[pmtid]
-                                    kk = kk + 1
-                                tree3.Fill()
+                                #tree3.Fill()
 
                         for i in cluster3:
 				charges[i] = 0 ## find the cluster1 and setting these PMTs to 0
                                 
-			Multiplicity.Fill(ncluster)
-			if ncluster == 1:
+			Multiplicity.Fill(ncluster[0])
+			if ncluster[0] == 1:
                                 print "event",eventID, " cluster=1"
-				n1.append(ncluster)
-			elif ncluster == 2:
+                                tree1.Fill()
+				n1.append(ncluster[0])
+			elif ncluster[0] == 2:
                                 print "event",eventID, " cluster=2"
-				n2.append(ncluster)
-			elif ncluster == 3:
+                                tree2.Fill()
+				n2.append(ncluster[0])
+			elif ncluster[0] == 3:
                                 print "event",eventID, " cluster=3"
-				n3.append(ncluster)
+                                tree3.Fill()
+				n3.append(ncluster[0])
   
         ### end of looping events
                 fout.cd()
                 H2_CosTheta_Phi.Write("H2_CosTheta_Phi_%d"%eventID)
-                Cluster_CosTheta_Phi1.Write("Cluster_CosTheta_Phi1_%d"%eventID)
-                Cluster_CosTheta_Phi2.Write("Cluster_CosTheta_Phi2_%d"%eventID)
-                Cluster_CosTheta_Phi3.Write("Cluster_CosTheta_Phi3_%d"%eventID)
+                Cluster_CosTheta_Phi1.Write("Charge_CosTheta_PhiCluster1_%d"%eventID)
+                Cluster_CosTheta_Phi2.Write("Charge_CosTheta_PhiCluster2_%d"%eventID)
+                Cluster_CosTheta_Phi3.Write("Charge_CosTheta_PhiCluster3_%d"%eventID)
 
-                ClusterPos_CosTheta_Phi1.Write("Cluster_CosTheta_Phi1_%d"%eventID)
-                ClusterPos_CosTheta_Phi2.Write("Cluster_CosTheta_Phi2_%d"%eventID)
-                ClusterPos_CosTheta_Phi3.Write("Cluster_CosTheta_Phi3_%d"%eventID)
+                ClusterPos_CosTheta_Phi1.Write("Clusterpos_CosTheta_Phi1_%d"%eventID)
+                ClusterPos_CosTheta_Phi2.Write("Clusterpos_CosTheta_Phi2_%d"%eventID)
+                ClusterPos_CosTheta_Phi3.Write("Clusterpos_CosTheta_Phi3_%d"%eventID)
 
                 T2_CosTheta_Phi.Write("T2_CosTheta_Phi_%d"%eventID)
                 Time_CosTheta_Phi1.Write("Time_CosTheta_Phi1_%d"%eventID)
