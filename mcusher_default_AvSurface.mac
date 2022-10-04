@@ -1,0 +1,48 @@
+# Speed up the simulation by omitting processes we don't care about
+/glg4debug/glg4param omit_muon_processes  1.0
+/glg4debug/glg4param omit_hadronic_processes  1.0
+
+# Load the DEAP-3600 geometry (liquid argon by default)
+/rat/db/set DETECTOR geo_file "DEAP-3600/DEAP-3600bulkTPB.geo"
+/rat/db/set DETECTOR experiment "DEAP-3600"
+
+# Define the liquid and gas interface i.e. fill level
+/rat/db/set GEO[cryoliquid] material "cryostat_vacuum"
+
+# Reduce file size by not storing MC particle trajectories
+/tracking/storeTrajectory 0
+
+# Database and geometry is set up - initialize
+/run/initialize
+
+# Set the "processors" to run. They are run in sequence on each event.
+/rat/proc daq
+/rat/proc smartcal
+/rat/proc triggertime
+/rat/proc timefit
+/rat/proc charge
+/rat/proc fmaxpe
+/rat/proc fitmblikelihood
+
+# Note that most processors allow tweaking using the /rat/procset commands.
+# Here we tell "count" to print a message every time 10 events are processed.
+/rat/proc count
+/rat/procset update 10
+
+# outroot is a special processor that writes to an output ROOT file.
+/rat/proc outroot
+/rat/procset file "MCdefault_Po210_AVsurface_2000evts_850p004.root"
+
+# Now set up the actual GEANT4 simulation. 
+# Here we're simulating electrons in the liquid argon.
+# Event generation for this particle
+/generator/add combo gun2:paint
+/grdm/setRadioactiveDecayFile 84 210 UserRadData_z84.a210
+/grdm/nucleusLimits 210 210 84 84
+/generator/vtx/set Po210 0. 0. 0. 0. 0. 0.
+/generator/pos/set 0. 0. -850.004 tpb_bulk 0.00000001 acrylic_RPT_asia
+
+# The overall rate of the events 
+/generator/rate/set 1
+# Actually run the simulation (100 events in this case).
+/run/beamOn 2000
