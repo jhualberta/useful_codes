@@ -349,7 +349,9 @@ for Files in AllFiles:
                         cluster1 = []
                         qcluster1 = 0
                         q_sort = sorted(check_charges, reverse=True) ## sort from largest to smallest
-                        selectQ_pmtList = q_sort[0:6] ## look into the 6 largest q PMTs
+                        ### select the 6 largest Q pmts (from 0 to 5), and q5>20
+                        selectQ_pmtList = [q for q in q_sort[0:6] if q>20]
+
                         #print "sort list of pmt q", selectQ_pmtList
                         qmax = selectQ_pmtList[0] ## the 1st is the largest
                         if qmax<QmaxCut:
@@ -372,8 +374,6 @@ for Files in AllFiles:
                              pmtPos = TVector3(radius*cos(phi)*sin(th),radius*sin(phi)*sin(th), radius*cost)
                              select_pmtPos.append(pmtPos)
 
-                        pmt_dist = [] # distance between qmax pmt q0
-                        pmt_angles = [] # angles between qmax pmt q0
                         pmt0_pos = select_pmtPos[0]
                         #print "======= checking event", evtID[0], "qmax", selectQ_pmtList
 
@@ -392,66 +392,61 @@ for Files in AllFiles:
 
                         ## First check the PMTs around q0 with dist, angles between 0,1; 0,2; ..., each q PMT > 20 pC
                         for i in range(1,len(select_pmtPos)): # compare q0 to q1, ..., q5
-                            if(selectQ_pmtList[i]>QminCut):
-                                dist = (select_pmtPos[i] - pmt0_pos).Mag()
-                                pmt_dist.append(dist) ## note: the index-0 element saves the (q0,q1);
-                                angle = pmt0_pos.Angle(select_pmtPos[i]) # acos(a.Unit()*b.Unit())
-                                pmt_angles.append(angle)
-                                if angle<(16.3*pi/180) and dist<250:
-                                    count_nearPMT += 1
-                                    searchPMTid_cluster1.append(charges.index(selectQ_pmtList[i])) # Note: selectQ_pmtList from 1, 2, ... instead of 0
-                                    continue
-                                if angle>(16.3*pi/180) and dist>250:
-                                    # print "eventID", evtID[0],"double cluster! dist = ", dist
-                                    flag_double = True
-                                    ## save PMT charges in 2nd cluster
-                                    searchPMTid_cluster2.append(charges.index(selectQ_pmtList[i])) ## Note: !!!selectQ_pmtList from 1, 2, ... instead of 0
-                                    seed_cluster2_idx = i # this index is for the selected PMT list, from 1 to 5, not the PMT id
-                                    print "event ", evtID[0], "there is a seed2 for double cluster, it is the q%d PMT" %seed_cluster2_idx, "with charge %f pC" %selectQ_pmtList[seed_cluster2_idx]
-                                    break;## break the loop around the seed q0, check the loop around the new seed
-                            else:
-                                # print "only up to %d PMTs" %i
-                                break; # the rest PMT should be lower charges (since reverse sorting), abandon
+                            dist = (select_pmtPos[i] - pmt0_pos).Mag()
+                            angle = pmt0_pos.Angle(select_pmtPos[i])
+                            if angle<(16.3*pi/180) and dist<250:
+                                count_nearPMT += 1
+                                searchPMTid_cluster1.append(charges.index(selectQ_pmtList[i])) # Note: selectQ_pmtList from 1, 2, ... instead of 0
+                                continue
+                            if angle>(16.3*pi/180) and dist>250:
+                                # print "eventID", evtID[0],"double cluster! dist = ", dist
+                                flag_double = True
+                                ## save PMT charges in 2nd cluster
+                                searchPMTid_cluster2.append(charges.index(selectQ_pmtList[i])) ## Note: !!!selectQ_pmtList from 1, 2, ... instead of 0
+                                seed_cluster2_idx = i # this index is for the selected PMT list, from 1 to 5, not the PMT id
+                                print "event ", evtID[0], "there is a seed2 for double cluster, it is the q%d PMT" %seed_cluster2_idx, "with charge %f pC" %selectQ_pmtList[seed_cluster2_idx]
+                                break;## break the loop around the seed q0, check the loop around the new seed
 
-
-                        for i in range(len(pmt_dist)):
-                                angle = pmt_angles[i] # angle between the qmax pmt (pmt0) to the others, from pmt1 to pmt5;
-                                dist = pmt_dist[i]
-                                if angle<(16.3*pi/180) and dist<250:
-                                    count_nearPMT += 1
-                                    searchPMTid_cluster1.append(charges.index(selectQ_pmtList[i+1])) # Note: selectQ_pmtList from 1, 2, ... instead of 0
-                                    continue
-                                ### if there exists a q_i PMT far away from q0, then event is a possible double-cluster!!
-                                if angle>(16.3*pi/180) and dist>250:
-                                    # print "eventID", evtID[0],"double cluster! dist = ", dist
-                                    flag_double = True
-                                    ## save PMT charges in 2nd cluster
-                                    searchPMTid_cluster2.append(charges.index(selectQ_pmtList[i+1])) ## Note: !!!selectQ_pmtList from 1, 2, ... instead of 0
-                                    seed_cluster2_idx = i+1 # this index is for the selected PMT list, from 1 to 5, not the PMT id
-                                    print "event ", evtID[0], "there is a seed2 for double cluster, it is the q%d PMT" %seed_cluster2_idx, "with charge %f pC" %selectQ_pmtList[seed_cluster2_idx]
-                                    break;## break the loop around the seed q0, check the loop around the new seed
+                        #print "checking!!!!!!!"
+                        #print "selectQ_pmtList", selectQ_pmtList
+                        #print "pmt0_angles", pmt0_angles
 
                         ## check the 2nd cluster from the seed
+                        searchPMTid_cluster3_candidate = [] # save the ids from 1 to 5 in select_pmtPos
                         if flag_double == True:
-                                pos_seed_cluster2 = select_pmtPos[seed_cluster2_idx]
-                                for i in range(seed_cluster2_idx+1,len(selectQ_pmtList)):# automatically ensures seed_cluster2_idx<=len(selectQ_pmtList)
-                                      ### first check whether the PMTs after this 2nd seed is around the q0
-                                      angle0 = pmt_angles[i]
-                                      dist0 = pmt_dist[i]
-                                      ## is it around q0 or belonging to single cluster?
-                                      if angle0<(16.3*pi/180) and dist0<250:
-                                          count_nearPMT += 1
-                                          searchPMTid_cluster1.append(charges.index(selectQ_pmtList[i]))
-                                      ## then check whether it is around the 2nd seed
-                                      angle = pos_seed_cluster2.Angle(select_pmtPos[i]) ## angle between TVector3
-                                      dist = (select_pmtPos[i] - pos_seed_cluster2).Mag()
-                                      if angle<(16.3*pi/180) and dist<250:
-                                           searchPMTid_cluster2.append(charges.index(selectQ_pmtList[i]))
-                                      if angle>(16.3*pi/180) and dist>250: ## is there a possible triple-cluster?
-                                           if angle0>(16.3*pi/180) and dist0>250:                                            
-                                               flag_triple = True # if there is a PMT far away from the 2nd seed, then could be triple/multiple, needn't check the rest
-                                               searchPMTid_cluster3.append(charges.index(selectQ_pmtList[i+1])) 
+                             pos_seed_cluster2 = select_pmtPos[seed_cluster2_idx]
+                             for i in range(seed_cluster2_idx+1,len(selectQ_pmtList)):# automatically ensures seed_cluster2_idx<=len(selectQ_pmtList)
+                                   ### first check whether the PMTs after this 2nd seed are around the q0
+                                   angle0 = pmt0_pos.Angle(select_pmtPos[i]) 
+                                   dist0 = (pmt0_pos - select_pmtPos[i]).Mag()
+                                   ## is it around q0 or belonging to single cluster?
+                                   if angle0<(16.3*pi/180) and dist0<250:
+                                       count_nearPMT += 1
+                                       searchPMTid_cluster1.append(charges.index(selectQ_pmtList[i]))
+                                   ## then check whether it is around the 2nd seed
+                                   angle = pos_seed_cluster2.Angle(select_pmtPos[i]) ## angle between TVector3
+                                   dist = (select_pmtPos[i] - pos_seed_cluster2).Mag()
+                                   if angle<(16.3*pi/180) and dist<250:
+                                        searchPMTid_cluster2.append(charges.index(selectQ_pmtList[i]))
+                                   if angle>(16.3*pi/180) and dist>250: ## is there a possible triple-cluster?
+                                        if angle0>(16.3*pi/180) and dist0>250: ## it is also not surround cluster1
+                                            print "a possible triple??"
+                                            flag_triple = True # if there is a PMT far away from the 2nd seed, then could be triple/multiple, needn't check the rest
+                                            searchPMTid_cluster3_candidate.append(i)
+                                            
+                        if flag_triple == True:
+                             seed_cluster3_idx = searchPMTid_cluster3_candidate[0]
+                             pos_seed_cluster3 = select_pmtPos[seed_cluster3_idx] #position of the seed of cluster 3
+                             searchPMTid_cluster3.append(charges.index(selectQ_pmtList[seed_cluster3_idx])) ## save the seed of cluster 3
+                             for i in range(seed_cluster3_idx+1, len(select_pmtPos)):
+                                   angle3 = pos_seed_cluster3.Angle(select_pmtPos[i]) 
+                                   dist3 = (pos_seed_cluster3 - select_pmtPos[i]).Mag()
+                                   if angle3<(16.3*pi/180) and dist3<250:
+                                            searchPMTid_cluster3.append(charges.index(selectQ_pmtList[i]))
 
+                        check_cluster1_charges = []
+                        check_cluster2_charges = []
+                        check_cluster3_charges = []
                         ## for double-clusters, it requires the sum of the PMTs> 100 pC
                         #print "searched charges in cluster2", searchPMTid_cluster2
                         if len(searchPMTid_cluster2) != 0:
@@ -460,28 +455,41 @@ for Files in AllFiles:
                                   # print "charges in cluster2", i, charges[i]
                                   qsum_double =  qsum_double + charges[i]
                              if qsum_double<100:
-                                  # print "pmt charge sum %f<100 pC, no double cluster!"%qsum_double
+                                  print "pmt charge sum %f<100 pC, no double cluster any more!"%qsum_double
                                   flag_double = False
-                             if len(searchPMTid_cluster3) != 0:
-                                  qsum_triple = 0
-                                  for i in searchPMTid_cluster3:
-                                       # print "charges in cluster2", i, charges[i]
-                                       qsum_triple =  qsum_triple + charges[i]
-                                  if qsum_triple<100:
-                                       # print "pmt charge sum %f<100 pC, no double cluster!"%qsum_double
-                                       flag_triple = False
-                                       else:
-                                            flag_triple = False
 
                         else:
                              flag_double = False
-                             flag_triple = False #if no double-cluster, then no triple-cluster
+
+                        ## then check triple-cluster
+                        if len(searchPMTid_cluster3) != 0:
+                             qsum_triple = 0
+                             for i in searchPMTid_cluster3:
+                                  # print "charges in cluster2", i, charges[i]
+                                  qsum_triple =  qsum_triple + charges[i]
+                             if qsum_triple<100:
+                                  print "pmt charge sum %f<100 pC, no triple cluster any more!"%qsum_triple
+                                  flag_triple = False
+                             else:
+                                  print "catch a triple/multiple cluster! very rare, cluster1",searchPMTid_cluster1, "cluster2", searchPMTid_cluster2, "cluster3", searchPMTid_cluster3
+                                  print "charge of 3rd is", qsum_triple
+                                  flag_triple = True
+                                  flag_double = False
+                                  #for ind in searchPMTid_cluster3:
+                                  #     check_cluster3_charges.append(charges[ind])
+                        else:
+                             flag_triple = False
+
 
                         if flag_double == False and flag_triple == False:
                              flag_single = True
                              # print "eventID", evtID[0], "single cluster!!"
 
+
                         if flag_single == True:
+                             for idx in searchPMTid_cluster1:
+                                   check_cluster1_charges.append(charges[idx])
+                             print "Ok, get a single-cluster, with id", searchPMTid_cluster1, "charge:", check_cluster1_charges
                              count_ncluster = 1 ## count for single cluster
                              ncluster[0] = count_ncluster
                              #id1 = charges.index(qmax)
@@ -504,6 +512,9 @@ for Files in AllFiles:
                              Multiplicity.Fill(ncluster[0])
 
                         if flag_double == True:
+                             for idx in searchPMTid_cluster2:
+                                   check_cluster2_charges.append(charges[idx])
+                             print "Ok, get a double-cluster, with id", searchPMTid_cluster2, "charge:", check_cluster2_charges
                              ncluster[0] = 2
                              #id1 = charges.index(qmax)
                              #ClusterPos_CosTheta_Phi2.Fill(Phi[id1],CosTheta[id1]) ## PMT pos, no weighting
@@ -539,6 +550,9 @@ for Files in AllFiles:
                              Multiplicity.Fill(ncluster[0])
 
                         if flag_triple == True:
+                             for idx in searchPMTid_cluster3:
+                                   check_cluster3_charges.append(charges[idx])
+                             print "Ok, get a triple-cluster, with id", searchPMTid_cluster3, "charge:", check_cluster3_charges
                              ncluster[0] = 3
                              Multiplicity.Fill(ncluster[0])
 
