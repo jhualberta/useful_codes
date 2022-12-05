@@ -1,0 +1,40 @@
+
+// This macro runs the particle analyzer on an an image
+// that has particles with holes and compares the results
+// to those from measuring the ROIs in the overlay
+// created by the particle analyzer. Correct measurement 
+// of the ROIs requires that the threshold is set and
+// the "Limit to threshold" option is enabled.
+
+//  setBatchMode(true);
+run("8-bit");
+run("Gaussian Blur...", "sigma=2");
+run("Subtract Background...","rolling=100.0 light background");
+setAutoThreshold("Default dark no-reset");
+//run("Threshold...");
+setThreshold(21, 252, "raw");
+  
+run("Analyze Particles...", "size=0-Infinity circularity=0.00-1.00");
+  
+  saveSettings;
+  tolerance = 0.0000001;
+  labels = newArray("Area","Mean","StdDev","Min","Max", "X","Y",
+    "XM","YM","Perim.","Major","Angle", "Circ.","Feret");
+  run("AuPbSn 40 (56K)");
+  run("Set Measurements...", "area mean standard min centroid perimeter fit feret's");
+  setAutoThreshold("Huang");
+  run("Analyze Particles...", "  show=Overlay clear");
+  //resetThreshold;
+  for (i=0; i<nResults; i++) {
+     Overlay.activateSelection(i);
+     for (j=0; j<labels.length; j++) {
+        label = labels[j];
+        List.setMeasurements("limit");
+        v1 = getResult(label,i);
+        v2 = List.getValue(label);
+        if (abs(v1-v2)>tolerance || (!isNaN(v1)&&isNaN(v2)) )
+           print(label+"["+i+"]: "+v1+"  "+v2);
+
+     }
+  }
+  restoreSettings;
