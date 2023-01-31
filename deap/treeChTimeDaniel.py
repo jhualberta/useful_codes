@@ -159,6 +159,15 @@ pulseindexfirstgarVal = array('f',[0]) ## EV.GetPulseIndexFirstGAr()
 cft2r = array('f',[0]) ## (chargetopring + chargesecondring)/qpe < 0.04
 cfb3r = array('f',[0]) ## (chargebottomring + chargesecondbottomring + chargethirdbottomring)/qPE<0.1
 
+### scintlikelihood calculation, qPE V1740 variables
+scintlikeVal = array('f',[0])
+scintlike16Val = array('f',[0])
+scintlikeqVal = array('f',[0])
+llneutronflashVal = array('f',[0])
+
+qPEnoSat_10000Val = array('f',[0])
+qPEnoSat_5000Val = array('f',[0])
+
 Nmax = 255 ## save how many PMTs for an event, for vacuum, should <200?
 NpeakMax = Nmax*50 ## for Nsubpeaks; assume 50 pulses
 NsubpeaksMax = Nmax*50*10 ## for pmt time, pulse time; assume 50 pulses and 10 subpeaks for each PMT
@@ -234,6 +243,13 @@ tree1.Branch("pmtCosTheta", pmtcosTheta, "pmtCosTheta[nPMTs]/F")
 #tree1.Branch("pmtPosZ", pmtposz, "pmtPosZ[nPMTs]/F")
 #tree1.Branch("nPulse",nPulse, "nPulse[nPMT]/I") ## each pmt has nPulse
 
+tree1.Branch("scintlike", scintlikeVal, "scintlike/F")
+tree1.Branch("scintlike16", scintlike16Val, "scintlike16/F")
+tree1.Branch("scintlikeq", scintlikeqVal, "scintlikeq/F")
+tree1.Branch("llneutronflash", llneutronflashVal, "llneutronflash/F")
+tree1.Branch("qPEnoSat_10000", qPEnoSat_10000Val, "qPEnoSat_10000")
+tree1.Branch("qPEnoSat_5000", qPEnoSat_5000Val, "qPEnoSat_5000")
+
 ### nSubpeaks = nPMTs*nPulse
 #tree1.Branch("nSubpeaks",nSubpeaks, "nSubpeaks[nPulse]/I") ## each pmt has nSubpeaks
 ### n subpeak time  = nPMTs*nPulse*nSubpeaks
@@ -296,6 +312,13 @@ for event in range (nentries):
         eventTimeVal[0] = CalTrigTime # daniel 6th cut: eventTime > 2250 and eventTime < 2700
         qpeVal[0] = CAL.GetQPE() # daniel 7th cut: qPE>60
         fmaxpeVal[0] = EV.GetFmaxpe()
+
+        scintlikeVal[0] = EV.GetScintillationLikelihood()
+        scintlike16Val[0] = EV.GetScintillationLikelihood16ns()
+        scintlikeqVal[0] = EV.GetChargeGOF()
+        llneutronflashVal[0] = EV.GetLLNeutronFlash()
+        qPEnoSat_10000Val[0] = CAL.GetQPEnoSat_10000()
+        qPEnoSat_5000Val[0] = CAL.GetQPEnoSat_5000()
 
         ### timefit2 valid (fmaxpe<0.75 automatically applied)
         try: 
