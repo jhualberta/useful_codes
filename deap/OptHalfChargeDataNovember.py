@@ -364,7 +364,7 @@ for Files in AllFiles:
                         qTopRing = EV.GetChargeTopRing(); qSecondRing = EV.GetChargeSecondRing();
                         qBotRing = EV.GetChargeBottomRing(); qSecondBotRing = EV.GetChargeSecondBottomRing(); qThirdBotRing = EV.GetChargeThirdBottomRing();
                         ### for liquid level, just save values, for further cuts!!!
-                        pulseindexfirstgarVal[0] =EV.pulseindexfirstgar
+                        pulseindexfirstgarVal[0] = EV.pulseindexfirstgar
                         cft2r[0] = (qTopRing + qSecondRing)/qpe
                         cfb3r[0] = (qBotRing + qSecondBotRing + qThirdBotRing)/qpe
 
@@ -378,10 +378,10 @@ for Files in AllFiles:
                         qPEnoSat_10000Val[0] = CAL.GetQPEnoSat_10000()
                         qPEnoSat_5000Val[0] = CAL.GetQPEnoSat_5000()
                         neckVetoVal[0] = CAL.GetNeckVetoPMTCount()
-                        
-                        #print "nhits??", CAL.GetNhit()
+                        nhits0 = ord(CAL.GetLateNhit())
+                        print "nhits??", nhits0
                         #nhitVal[0] = int(float(CAL.GetNhit())) ## convert unsigned int to int
-
+                        print "======= checking event", evtID[0]
                         ### check pmts
                         charges = np.zeros(255); id = []; pmtTime = np.zeros(255); ### time of each PMT
                         savePmtPhi = np.zeros(255); savePmtCosTheta = np.zeros(255); 

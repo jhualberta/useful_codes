@@ -96,62 +96,65 @@ H1_scintlike_7 = TH1D("H1_scintlike_7","scintlike",1000,0,1000)
 H1_llneutron_7 = TH1D("H1_llneutron_7","llneutron",200,-100,100)
 
 ###########################################################################################################################
-### 7-level cuts + STR levels, Level 8
-H2_nSCBayes_rprompt60Bayes_7_neck = TH2D( "H2_nSCBayes_rprompt60Bayes_7_neck", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_qpe_fprompt_7_neck = TH2D( "H2_qpe_fprompt_7_neck", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_rhoZ_7_neck = TH2D("H2_rhoZ_7_neck", "rho vs z", 850, 0, 850, 1700, -850, 850)
-H2_nhitQPE_7_neck = TH2D("H2_nhitQPE_7_neck", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
-H2_nhitNSCB_7_neck = TH2D("H2_nhitNSCB_7_neck", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
-H1_fmaxpe_7_neck = TH1D("H1_fmaxpe_7_neck","fmaxpe",100,0,1)
-H1_scintlike_7_neck = TH1D("H1_scintlike_7_neck","scintlike",1000,0,1000)
-H1_llneutron_7_neck = TH1D("H1_llneutron_7_neck","llneutron",200,-100,100)
-## Level 9
-H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe = TH2D( "H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_qpe_fprompt_7_neck_fmaxpe = TH2D( "H2_qpe_fprompt_7_neck_fmaxpe", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_rhoZ_7_neck_fmaxpe = TH2D("H2_rhoZ_7_neck_fmaxpe", "rho vs z", 850, 0, 850, 1700, -850, 850)
-H2_nhitQPE_7_neck_fmaxpe = TH2D("H2_nhitQPE_7_neck_fmaxpe", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
-H2_nhitNSCB_7_neck_fmaxpe = TH2D("H2_nhitNSCB_7_neck_fmaxpe", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
-H1_fmaxpe_7_neck_fmaxpe = TH1D("H1_fmaxpe_7_neck_fmaxpe","fmaxpe",100,0,1)
-H1_scintlike_7_neck_fmaxpe = TH1D("H1_scintlike_7_neck_fmaxpe","scintlike",1000,0,1000)
-H1_llneutron_7_neck_fmaxpe = TH1D("H1_llneutron_7_neck_fmaxpe","llneutron",200,-100,100)
-## Level 10
-H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe_mbR = TH2D( "H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe_mbR", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_qpe_fprompt_7_neck_fmaxpe_mbR = TH2D( "H2_qpe_fprompt_7_neck_fmaxpe_mbR", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_rhoZ_7_neck_fmaxpe_mbR = TH2D("H2_rhoZ_7_neck_fmaxpe_mbR", "rho vs z", 850, 0, 850, 1700, -850, 850)
-H2_nhitQPE_7_neck_fmaxpe_mbR = TH2D("H2_nhitQPE_7_neck_fmaxpe_mbR", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
-H2_nhitNSCB_7_neck_fmaxpe_mbR = TH2D("H2_nhitNSCB_7_neck_fmaxpe_mbR", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
-H1_fmaxpe_7_neck_fmaxpe_mbR = TH1D("H1_fmaxpe_7_neck_fmaxpe_mbR","fmaxpe", 100,0,1)
-H1_scintlike_7_neck_fmaxpe_mbR = TH1D("H1_scintlike_7_neck_fmaxpe_mbR","scintlike",1000,0,1000)
-H1_llneutron_7_neck_fmaxpe_mbR = TH1D("H1_llneutron_7_neck_fmaxpe_mbR","llneutron",200,-100,100)
+### Level 8, 7-level cuts + STR levels, start with fmaxpe first !!
+H2_nSCBayes_rprompt60Bayes_7_fmaxpe = TH2D( "H2_nSCBayes_rprompt60Bayes_7_fmaxpe", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_qpe_fprompt_7_fmaxpe = TH2D( "H2_qpe_fprompt_7_fmaxpe", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_rhoZ_7_fmaxpe = TH2D("H2_rhoZ_7_fmaxpe", "rho vs z", 850, 0, 850, 1700, -850, 850)
+H2_nhitQPE_7_fmaxpe = TH2D("H2_nhitQPE_7_fmaxpe", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
+H2_nhitNSCB_7_fmaxpe = TH2D("H2_nhitNSCB_7_fmaxpe", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
+H1_fmaxpe_7_fmaxpe = TH1D("H1_fmaxpe_7_fmaxpe","fmaxpe",100,0,1)
+H1_scintlike_7_fmaxpe = TH1D("H1_scintlike_7_fmaxpe","scintlike",1000,0,1000)
+H1_llneutron_7_fmaxpe = TH1D("H1_llneutron_7_fmaxpe","llneutron",200,-100,100)
+## Level 9, fmaxpe + neckVeto
+H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck = TH2D( "H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_qpe_fprompt_7_fmaxpe_neck = TH2D( "H2_qpe_fprompt_7_fmaxpe_neck", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_rhoZ_7_fmaxpe_neck = TH2D("H2_rhoZ_7_fmaxpe_neck", "rho vs z", 850, 0, 850, 1700, -850, 850)
+H2_nhitQPE_7_fmaxpe_neck = TH2D("H2_nhitQPE_7_fmaxpe_neck", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
+H2_nhitNSCB_7_fmaxpe_neck = TH2D("H2_nhitNSCB_7_fmaxpe_neck", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
+H1_fmaxpe_7_fmaxpe_neck = TH1D("H1_fmaxpe_7_fmaxpe_neck","fmaxpe",100,0,1)
+H1_scintlike_7_fmaxpe_neck = TH1D("H1_scintlike_7_fmaxpe_neck","scintlike",1000,0,1000)
+H1_llneutron_7_fmaxpe_neck = TH1D("H1_llneutron_7_fmaxpe_neck","llneutron",200,-100,100)
+## Level 10, fmaxpe + neckVeto + mbR
+H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck_mbR = TH2D( "H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck_mbR", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_qpe_fprompt_7_fmaxpe_neck_mbR = TH2D( "H2_qpe_fprompt_7_fmaxpe_neck_mbR", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_rhoZ_7_fmaxpe_neck_mbR = TH2D("H2_rhoZ_7_fmaxpe_neck_mbR", "rho vs z", 850, 0, 850, 1700, -850, 850)
+H2_nhitQPE_7_fmaxpe_neck_mbR = TH2D("H2_nhitQPE_7_fmaxpe_neck_mbR", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
+H2_nhitNSCB_7_fmaxpe_neck_mbR = TH2D("H2_nhitNSCB_7_fmaxpe_neck_mbR", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
+H1_fmaxpe_7_fmaxpe_neck_mbR = TH1D("H1_fmaxpe_7_fmaxpe_neck_mbR","fmaxpe", 100,0,1)
+H1_scintlike_7_fmaxpe_neck_mbR = TH1D("H1_scintlike_7_fmaxpe_neck_mbR","scintlike",1000,0,1000)
+H1_llneutron_7_fmaxpe_neck_mbR = TH1D("H1_llneutron_7_fmaxpe_neck_mbR","llneutron",200,-100,100)
 
-### 7-level cuts + STR + LAr level cuts, Level 11
-H2_nSCBayes_rprompt60Bayes_7_str_qRatio = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_qRatio", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_qpe_fprompt_7_str_qRatio = TH2D( "H2_qpe_fprompt_7_str_qRatio", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_rhoZ_7_str_qRatio = TH2D("H2_rhoZ_7_str_qRatio", "rho vs z", 850, 0, 850, 1700, -850, 850)
-H2_nhitQPE_7_str_qRatio = TH2D("H2_nhitQPE_7_str_qRatio", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
-H2_nhitNSCB_7_str_qRatio = TH2D("H2_nhitNSCB_7_str_qRatio", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
-H1_fmaxpe_7_str_qRatio = TH1D("H1_fmaxpe_7_str_qRatio","fmaxpe",100,0,1)
-H1_scintlike_7_str_qRatio = TH1D("H1_scintlike_7_str_qRatio","scintlike",1000,0,1000)
-H1_llneutron_7_str_qRatio = TH1D("H1_llneutron_7_str_qRatio","llneutron",200,-100,100)
-### Level 12
-H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_qpe_fprompt_7_str_qRatio_mbZ = TH2D( "H2_qpe_fprompt_7_str_qRatio_mbZ", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_rhoZ_7_str_qRatio_mbZ = TH2D("H2_rhoZ_7_str_qRatio_mbZ", "rho vs z", 850, 0, 850, 1700, -850, 850)
-H2_nhitQPE_7_str_qRatio_mbZ = TH2D("H2_nhitQPE_7_str_qRatio_mbZ", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
-H2_nhitNSCB_7_str_qRatio_mbZ = TH2D("H2_nhitNSCB_7_str_qRatio_mbZ", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
-H1_fmaxpe_7_str_qRatio_mbZ = TH1D("H1_fmaxpe_7_str_qRatio_mbZ","fmaxpe",100,0,1)
-H1_scintlike_7_str_qRatio_mbZ = TH1D("H1_scintlike_7_str_qRatio_mbZ","scintlike",1000,0,1000)
-H1_llneutron_7_str_qRatio_mbZ = TH1D("H1_llneutron_7_str_qRatio_mbZ","llneutron",200,-100,100)
-### Level 13
-H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ_pulseG = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ_pulseG", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_qpe_fprompt_7_str_qRatio_mbZ_pulseG = TH2D( "H2_qpe_fprompt_7_str_qRatio_mbZ_pulseG", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
-H2_rhoZ_7_str_qRatio_mbZ_pulseG = TH2D("H2_rhoZ_7_str_qRatio_mbZ_pulseG", "rho vs z", 850, 0, 850, 1700, -850, 850)
-H2_nhitQPE_7_str_qRatio_mbZ_pulseG = TH2D("H2_nhitQPE_7_str_qRatio_mbZ_pulseG", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
-H2_nhitNSCB_7_str_qRatio_mbZ_pulseG = TH2D("H2_nhitNSCB_7_str_qRatio_mbZ_pulseG", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
-H1_fmaxpe_7_str_qRatio_mbZ_pulseG = TH1D("H1_fmaxpe_7_str_qRatio_mbZ_pulseG","fmaxpe",100,0,1)
-H1_scintlike_7_str_qRatio_mbZ_pulseG = TH1D("H1_scintlike_7_str_qRatio_mbZ_pulseG","scintlike",1000,0,1000)
-H1_llneutron_7_str_qRatio_mbZ_pulseG = TH1D("H1_llneutron_7_str_qRatio_mbZ_pulseG","llneutron", 200,-100,100)
+###Level 11, 7-level cuts + STR(fmaxpe+neckVeto+mbR) + start LAr with pulseG
+H2_nSCBayes_rprompt60Bayes_7_str_pulseG = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_pulseG", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_qpe_fprompt_7_str_pulseG = TH2D( "H2_qpe_fprompt_7_str_pulseG", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_rhoZ_7_str_pulseG = TH2D("H2_rhoZ_7_str_pulseG", "rho vs z", 850, 0, 850, 1700, -850, 850)
+H2_nhitQPE_7_str_pulseG = TH2D("H2_nhitQPE_7_str_pulseG", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
+H2_nhitNSCB_7_str_pulseG = TH2D("H2_nhitNSCB_7_str_pulseG", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
+H1_fmaxpe_7_str_pulseG = TH1D("H1_fmaxpe_7_str_pulseG","fmaxpe",100,0,1)
+H1_scintlike_7_str_pulseG = TH1D("H1_scintlike_7_str_pulseG","scintlike",1000,0,1000)
+H1_llneutron_7_str_pulseG = TH1D("H1_llneutron_7_str_pulseG","llneutron",200,-100,100)
 
+### Level 12, LAr: pulse G + cft2r_mbZ 
+H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ = TH2D( "H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_rhoZ_7_str_pulseG_cft2r_mbZ = TH2D("H2_rhoZ_7_str_pulseG_cft2r_mbZ", "rho vs z", 850, 0, 850, 1700, -850, 850)
+H2_nhitQPE_7_str_pulseG_cft2r_mbZ = TH2D("H2_nhitQPE_7_str_pulseG_cft2r_mbZ", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
+H2_nhitNSCB_7_str_pulseG_cft2r_mbZ = TH2D("H2_nhitNSCB_7_str_pulseG_cft2r_mbZ", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
+H1_fmaxpe_7_str_pulseG_cft2r_mbZ = TH1D("H1_fmaxpe_7_str_pulseG_cft2r_mbZ","fmaxpe",100,0,1)
+H1_scintlike_7_str_pulseG_cft2r_mbZ = TH1D("H1_scintlike_7_str_pulseG_cft2r_mbZ","scintlike",1000,0,1000)
+H1_llneutron_7_str_pulseG_cft2r_mbZ = TH1D("H1_llneutron_7_str_pulseG_cft2r_mbZ","llneutron",200,-100,100)
+
+### Level 13, LAr: pulse G + cft2r_mbZ + cfb3r
+H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ_cfb3r = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ_cfb3r", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ_cfb3r = TH2D( "H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ_cfb3r", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
+H2_rhoZ_7_str_pulseG_cft2r_mbZ_cfb3r = TH2D("H2_rhoZ_7_str_pulseG_cft2r_mbZ_cfb3r", "rho vs z", 850, 0, 850, 1700, -850, 850)
+H2_nhitQPE_7_str_pulseG_cft2r_mbZ_cfb3r = TH2D("H2_nhitQPE_7_str_pulseG_cft2r_mbZ_cfb3r", "qpe vs nhit/qpe", 2000, 0, 2000, 100, 0, 1)
+H2_nhitNSCB_7_str_pulseG_cft2r_mbZ_cfb3r = TH2D("H2_nhitNSCB_7_str_pulseG_cft2r_mbZ_cfb3r", "qpe vs nhit/nSCB", 2000, 0, 2000, 100, 0, 1)
+H1_fmaxpe_7_str_pulseG_cft2r_mbZ_cfb3r = TH1D("H1_fmaxpe_7_str_pulseG_cft2r_mbZ_cfb3r","fmaxpe",100,0,1)
+H1_scintlike_7_str_pulseG_cft2r_mbZ_cfb3r = TH1D("H1_scintlike_7_str_pulseG_cft2r_mbZ_cfb3r","scintlike",1000,0,1000)
+H1_llneutron_7_str_pulseG_cft2r_mbZ_cfb3r = TH1D("H1_llneutron_7_str_pulseG_cft2r_mbZ_cfb3r","llneutron", 200,-100,100)
+
+#### !!!! Be careful that TF2 must exist then it is fair to do this cut
 #### TF2 - MB consistency cuts, Level 14: z consistency
 H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
 H2_qpe_fprompt_7_str_LAr_zCon = TH2D( "H2_qpe_fprompt_7_str_LAr_zCon", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
@@ -172,7 +175,7 @@ H1_fmaxpe_7_str_LAr_zrCon = TH1D("H1_fmaxpe_7_str_LAr_zrCon","fmaxpe",100,0,1)
 H1_scintlike_7_str_LAr_zrCon = TH1D("H1_scintlike_7_str_LAr_zrCon","scintlike",1000,0,1000)
 H1_llneutron_7_str_LAr_zrCon = TH1D("H1_llneutron_7_str_LAr_zrCon","llneutron", 200,-100,100)
 
-#### TF2 - MB consistency cuts, Level 14 a: z consistency
+#### TF2 - MB consistency cuts, Level 14 a or level 16: z consistency
 H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon_tf2Cerenkov = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon_tf2Cerenkov", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
 H2_qpe_fprompt_7_str_LAr_zCon_tf2Cerenkov = TH2D( "H2_qpe_fprompt_7_str_LAr_zCon_tf2Cerenkov", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
 H2_rhoZ_7_str_LAr_zCon_tf2Cerenkov = TH2D("H2_rhoZ_7_str_LAr_zCon_tf2Cerenkov", "rho vs z", 850, 0, 850, 1700, -850, 850)
@@ -182,7 +185,7 @@ H1_fmaxpe_7_str_LAr_zCon_tf2Cerenkov = TH1D("H1_fmaxpe_7_str_LAr_zCon_tf2Cerenko
 H1_scintlike_7_str_LAr_zCon_tf2Cerenkov = TH1D("H1_scintlike_7_str_LAr_zCon_tf2Cerenkov","scintlike",1000,0,1000)
 H1_llneutron_7_str_LAr_zCon_tf2Cerenkov = TH1D("H1_llneutron_7_str_LAr_zCon_tf2Cerenkov","llneutron", 200,-100,100)
 
-### TF2 - MB consistency cuts, Level 15 a
+### TF2 - MB consistency cuts, Level 15 a or level 17
 H2_nSCBayes_rprompt60Bayes_7_str_LAr_zrCon_tf2Cerenkov = TH2D( "H2_nSCBayes_rprompt60Bayes_7_str_LAr_zrCon_tf2Cerenkov", "; nSCBayes [1/bin]; rprompt60Bayes [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
 H2_qpe_fprompt_7_str_LAr_zrCon_tf2Cerenkov = TH2D( "H2_qpe_fprompt_7_str_LAr_zrCon_tf2Cerenkov", "; qpe [1/bin]; fprompt [0.01/bin]", 2000, 0, 2000, 100, 0.0, 1.0 )
 H2_rhoZ_7_str_LAr_zrCon_tf2Cerenkov = TH2D("H2_rhoZ_7_str_LAr_zrCon_tf2Cerenkov", "rho vs z", 850, 0, 850, 1700, -850, 850)
@@ -214,6 +217,9 @@ H_countTotal = TH1F("H_countTotal", "total", level, 0, level)
 H_countROI = TH1F("H_countROI", "roi cuts", level, 0, level)
 H_countSideBand = TH1F("H_countSideBand", "sideband cuts", level, 0, level)
 
+### this ntuple saves the event info for tf2 invalid
+### type == 0 ->timefit2,  type ==1 ->timefit2_cerenkov
+ntupleTF2 = TNtuple("ntupleTF2","save TF2 info","runID:subrunID:eventID:nscb:rprompt60Bayes:mbX:mbY:mbZ:tf2X:tf2Y:tf2Z:tf2cerenkovX:tf2cerenkovY:tf2cerenkovZ")
 
 ###########################################################################################################################
 
@@ -222,6 +228,9 @@ for event in range(nentries):
         print (event+1), "Analyzed..."
     data.GetEntry(event)
     flag=0
+    runID = data.runID;
+    subrunID = data.subrunID;
+    eventID = data.eventID;
     nscb = data.nSCBayes; 
     qpe = data.qPE;
     ## print qpe
@@ -338,87 +347,86 @@ for event in range(nentries):
                           countTotal[7] += 1
                           if roicut.IsInside(nscb, rprompt60Bayes): countROI[7] += 1
                           if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[7] += 1
-                          flag=1
                           ### Note: for some events, qpe could be 0
                           cft2r = (data.chargetopring + data.chargesecondring)/qpe
                           cfb3r = (data.chargebottomring + data.chargesecondbottomring + data.chargethirdbottomring)/qpe
 
-                          ### 7-level cuts + STR levels
-                          if data.neckVetoN  == 0: ## level 8 
-                            H2_nSCBayes_rprompt60Bayes_7_neck.Fill(nscb, rprompt60Bayes)
-                            H2_qpe_fprompt_7_neck.Fill(qpe, fprompt)
-                            H2_rhoZ_7_neck.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
-                            if qpe>0: H2_nhitQPE_7_neck.Fill(qpe, nhit/qpe)
-                            if nscb>0: H2_nhitNSCB_7_neck.Fill(nscb, nhit/nscb)
-                            H1_fmaxpe_7_neck.Fill(fmaxpe)
-                            H1_scintlike_7_neck.Fill(scintlike)
-                            H1_llneutron_7_neck.Fill(llneutronflash)
+                          ### Level 8, 7-level cuts + STR levels, start with fmaxpe
+                          if data.fmaxpe<0.4:
+                            H2_nSCBayes_rprompt60Bayes_7_fmaxpe.Fill(nscb, rprompt60Bayes)
+                            H2_qpe_fprompt_7_fmaxpe.Fill(qpe, fprompt)
+                            H2_rhoZ_7_fmaxpe.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
+                            if qpe>0: H2_nhitQPE_7_fmaxpe.Fill(qpe, nhit/qpe)
+                            if nscb>0: H2_nhitNSCB_7_fmaxpe.Fill(nscb, nhit/nscb)
+                            H1_fmaxpe_7_fmaxpe.Fill(fmaxpe)
+                            H1_scintlike_7_fmaxpe.Fill(scintlike)
+                            H1_llneutron_7_fmaxpe.Fill(llneutronflash)
                             countTotal[8] += 1
                             if roicut.IsInside(nscb, rprompt60Bayes): countROI[8] += 1
                             if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[8] += 1
 
-                            if data.fmaxpe<0.4: ## level 9
-                              H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe.Fill(nscb, rprompt60Bayes)
-                              H2_qpe_fprompt_7_neck_fmaxpe.Fill(qpe, fprompt)
-                              H2_rhoZ_7_neck_fmaxpe.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
-                              if qpe>0: H2_nhitQPE_7_neck_fmaxpe.Fill(qpe, nhit/qpe)
-                              if nscb>0: H2_nhitNSCB_7_neck_fmaxpe.Fill(nscb, nhit/nscb)
-                              H1_fmaxpe_7_neck_fmaxpe.Fill(fmaxpe)
-                              H1_scintlike_7_neck_fmaxpe.Fill(scintlike)
-                              H1_llneutron_7_neck_fmaxpe.Fill(llneutronflash)
+                            if data.neckVetoN  == 0: ## level 9
+                              H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck.Fill(nscb, rprompt60Bayes)
+                              H2_qpe_fprompt_7_fmaxpe_neck.Fill(qpe, fprompt)
+                              H2_rhoZ_7_fmaxpe_neck.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
+                              if qpe>0: H2_nhitQPE_7_fmaxpe_neck.Fill(qpe, nhit/qpe)
+                              if nscb>0: H2_nhitNSCB_7_fmaxpe_neck.Fill(nscb, nhit/nscb)
+                              H1_fmaxpe_7_fmaxpe_neck.Fill(fmaxpe)
+                              H1_scintlike_7_fmaxpe_neck.Fill(scintlike)
+                              H1_llneutron_7_fmaxpe_neck.Fill(llneutronflash)
                               countTotal[9] += 1
                               if roicut.IsInside(nscb, rprompt60Bayes): countROI[9] += 1
                               if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[9] += 1
 
                               if mbR<630: ## level 10 
-                                H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe_mbR.Fill(nscb, rprompt60Bayes)
-                                H2_qpe_fprompt_7_neck_fmaxpe_mbR.Fill(qpe, fprompt)
-                                H2_rhoZ_7_neck_fmaxpe_mbR.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
-                                if qpe>0: H2_nhitQPE_7_neck_fmaxpe_mbR.Fill(qpe, nhit/qpe)
-                                if nscb>0: H2_nhitNSCB_7_neck_fmaxpe_mbR.Fill(nscb, nhit/nscb)
-                                H1_fmaxpe_7_neck_fmaxpe_mbR.Fill(fmaxpe)
-                                H1_scintlike_7_neck_fmaxpe_mbR.Fill(scintlike)
-                                H1_llneutron_7_neck_fmaxpe_mbR.Fill(llneutronflash)
+                                H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck_mbR.Fill(nscb, rprompt60Bayes)
+                                H2_qpe_fprompt_7_fmaxpe_neck_mbR.Fill(qpe, fprompt)
+                                H2_rhoZ_7_fmaxpe_neck_mbR.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
+                                if qpe>0: H2_nhitQPE_7_fmaxpe_neck_mbR.Fill(qpe, nhit/qpe)
+                                if nscb>0: H2_nhitNSCB_7_fmaxpe_neck_mbR.Fill(nscb, nhit/nscb)
+                                H1_fmaxpe_7_fmaxpe_neck_mbR.Fill(fmaxpe)
+                                H1_scintlike_7_fmaxpe_neck_mbR.Fill(scintlike)
+                                H1_llneutron_7_fmaxpe_neck_mbR.Fill(llneutronflash)
                                 countTotal[10] += 1
                                 if roicut.IsInside(nscb, rprompt60Bayes): countROI[10] += 1
                                 if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[10] += 1
                         
-                                ### LAr cuts
-                                if cft2r<0.04 and cfb3r<0.1: ## level 11
-                                     H2_nSCBayes_rprompt60Bayes_7_str_qRatio.Fill(nscb, rprompt60Bayes)
-                                     H2_qpe_fprompt_7_str_qRatio.Fill(qpe, fprompt)
-                                     H2_rhoZ_7_str_qRatio.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
-                                     if qpe>0: H2_nhitQPE_7_str_qRatio.Fill(qpe, nhit/qpe)
-                                     if nscb>0: H2_nhitNSCB_7_str_qRatio.Fill(nscb, nhit/nscb)
-                                     H1_fmaxpe_7_str_qRatio.Fill(fmaxpe)
-                                     H1_scintlike_7_str_qRatio.Fill(scintlike)
-                                     H1_llneutron_7_str_qRatio.Fill(llneutronflash)
-                                     countTotal[11] += 1
-                                     if roicut.IsInside(nscb, rprompt60Bayes): countROI[11] += 1
-                                     if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[11] += 1
+                                ### LAr cuts, start with pulseGar
+                                if data.pulseindexfirstgar>2: ## level 11
+                                    H2_nSCBayes_rprompt60Bayes_7_str_pulseG.Fill(nscb, rprompt60Bayes)
+                                    H2_qpe_fprompt_7_str_pulseG.Fill(qpe, fprompt)
+                                    H2_rhoZ_7_str_pulseG.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
+                                    if qpe>0: H2_nhitQPE_7_str_pulseG.Fill(qpe, nhit/qpe)
+                                    if nscb>0: H2_nhitNSCB_7_str_pulseG.Fill(nscb, nhit/nscb)
+                                    H1_fmaxpe_7_str_pulseG.Fill(fmaxpe)
+                                    H1_scintlike_7_str_pulseG.Fill(scintlike)
+                                    H1_llneutron_7_str_pulseG_.Fill(llneutronflash)
+                                    countTotal[11] += 1
+                                    if roicut.IsInside(nscb, rprompt60Bayes): countROI[11] += 1
+                                    if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[11] += 1
 
-                                     if mbZ<550:## level 12
-                                       H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ.Fill(nscb, rprompt60Bayes)
-                                       H2_qpe_fprompt_7_str_qRatio_mbZ.Fill(qpe, fprompt)
-                                       H2_rhoZ_7_str_qRatio_mbZ.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
-                                       if qpe>0: H2_nhitQPE_7_str_qRatio_mbZ.Fill(qpe, nhit/qpe)
-                                       if nscb>0: H2_nhitNSCB_7_str_qRatio_mbZ.Fill(nscb, nhit/nscb)
-                                       H1_fmaxpe_7_str_qRatio_mbZ.Fill(fmaxpe)
-                                       H1_scintlike_7_str_qRatio_mbZ.Fill(scintlike)
-                                       H1_llneutron_7_str_qRatio_mbZ.Fill(llneutronflash)
-                                       countTotal[12] += 1
-                                       if roicut.IsInside(nscb, rprompt60Bayes): countROI[12] += 1
-                                       if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[12] += 1
+                                    if cft2r<0.04 and mbZ<550: ## level 12
+                                        H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ.Fill(nscb, rprompt60Bayes)
+                                        H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ.Fill(qpe, fprompt)
+                                        H2_rhoZ_7_str_pulseG_cft2r_mbZ.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
+                                        if qpe>0: H2_nhitQPE_7_str_pulseG_cft2r_mbZ.Fill(qpe, nhit/qpe)
+                                        if nscb>0: H2_nhitNSCB_7_str_pulseG_cft2r_mbZ.Fill(nscb, nhit/nscb)
+                                        H1_fmaxpe_7_str_pulseG_cft2r_mbZ.Fill(fmaxpe)
+                                        H1_scintlike_7_str_pulseG_cft2r_mbZ.Fill(scintlike)
+                                        H1_llneutron_7_str_pulseG_cft2r_mbZ.Fill(llneutronflash)
+                                        countTotal[12] += 1
+                                        if roicut.IsInside(nscb, rprompt60Bayes): countROI[12] += 1
+                                        if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[12] += 1
 
-                                       if data.pulseindexfirstgar>2: ## level 13
-                                          H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ_pulseG.Fill(nscb, rprompt60Bayes)
-                                          H2_qpe_fprompt_7_str_qRatio_mbZ_pulseG.Fill(qpe, fprompt)
-                                          H2_rhoZ_7_str_qRatio_mbZ_pulseG.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
-                                          if qpe>0: H2_nhitQPE_7_str_qRatio_mbZ_pulseG.Fill(qpe, nhit/qpe)
-                                          if nscb>0: H2_nhitNSCB_7_str_qRatio_mbZ_pulseG.Fill(nscb, nhit/nscb)
-                                          H1_fmaxpe_7_str_qRatio_mbZ_pulseG.Fill(fmaxpe)
-                                          H1_scintlike_7_str_qRatio_mbZ_pulseG.Fill(scintlike)
-                                          H1_llneutron_7_str_qRatio_mbZ_pulseG.Fill(llneutronflash)
+                                        if cfb3r<0.1:## level 13
+                                          H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(nscb, rprompt60Bayes)
+                                          H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(qpe, fprompt)
+                                          H2_rhoZ_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(sqrt(mbX*mbX+mbY*mbY),mbZ)
+                                          if qpe>0: H2_nhitQPE_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(qpe, nhit/qpe)
+                                          if nscb>0: H2_nhitNSCB_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(nscb, nhit/nscb)
+                                          H1_fmaxpe_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(fmaxpe)
+                                          H1_scintlike_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(scintlike)
+                                          H1_llneutron_7_str_pulseG_cft2r_mbZ_cfb3r.Fill(llneutronflash)
                                           countTotal[13] += 1
                                           if roicut.IsInside(nscb, rprompt60Bayes): countROI[13] += 1
                                           if sidebandcut.IsInside(nscb, rprompt60Bayes): countSideband[13] += 1
@@ -427,7 +435,19 @@ for event in range(nentries):
                                           promptPE = nscb*rprompt60Bayes;
                                           mbPos = TVector3(mbX,mbY,mbZ);
                                           tf2X = data.timefit2X; tf2Y = data.timefit2Y; tf2Z = data.timefit2Z;
-                                          tf2cerenkovX = data.timefit2cerenkovX; tf2cerenkovY = data.timefit2cerenkovY; tf2cerenkovZ = data.timefit2cerenkovZ; 
+                                          tf2cerenkovX = data.timefit2cerenkovX; tf2cerenkovY = data.timefit2cerenkovY; tf2cerenkovZ = data.timefit2cerenkovZ;
+
+                                          ## just save tf2 info for further checking
+                                          ntupleTF2.Fill(runID, subrunID, eventID, nscb, rprompt60Bayes, mbX, mbY, mbZ, tf2X, tf2Y, tf2Z, tf2cerenkovX, tf2cerenkovY, tf2cerenkovZ)
+
+                                          ### make sure TF2 is valid!!!
+                                          ##badcheck = -9999999
+                                          ##if (tf2X == badcheck or tf2Y == badcheck or tf2Z == badcheck):
+                                          ##    ntupleFailTF2.Fill(runID, subrunID, eventID, 0)
+                                          ##    ## print "tf2 is not valid, check the results carefully!!!"
+        
+                                          ##if (tf2cerenkovX == badcheck or tf2cerenkovY == badcheck or tf2cerenkovZ == badcheck):
+                                          ##    ntupleFailTF2.Fill(runID, subrunID, eventID, 1)
 
                                           tf2Pos = TVector3(tf2X,tf2Y,tf2Z);
                                           tf2CerenPos = TVector3(tf2cerenkovX,tf2cerenkovY,tf2cerenkovZ);
@@ -437,8 +457,9 @@ for event in range(nentries):
                                           zCut = zContF.Get("cont90_cut;1");
 
                                           rContF = TFile("tf2mb_nSCBayes_dist_after_deltaz90_contours.root","READ");
-                                          rCut = rContF.Get("cont85_cut;1");
+                                          rCut = rContF.Get("cont85_cut;1"); 
 
+                                          ### using tf2
                                           if (zCut.IsInside(promptPE,(tf2Pos.Z()-mbPos.Z()))):
                                              H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon.Fill(nscb, rprompt60Bayes)
                                              H2_qpe_fprompt_7_str_LAr_zCon.Fill(qpe, fprompt)
@@ -496,10 +517,10 @@ for event in range(nentries):
 
 
 ## fill the counts in ROI for each level cuts
-for i in range(0,Level):
-   H_countTotal.Fill(i+1,countTotal[i])
-   H_countROI.Fill(i+1, countROI[i])
-   H_countSideBand.Fill(i+1, countSideband[i])
+for i in range(0, level):
+   H_countTotal.Fill(i,countTotal[i])
+   H_countROI.Fill(i, countROI[i])
+   H_countSideBand.Fill(i, countSideband[i])
 
 #    if flag:
 #        dstreeclone.Fill()
@@ -536,23 +557,37 @@ H2_qpe_fprompt_6.Write("H2_qpe_fprompt_6")
 H2_nSCBayes_rprompt60Bayes_7.Write("H2_nSCBayes_rprompt60Bayes_7")
 H2_qpe_fprompt_7.Write("H2_qpe_fprompt_7")
 
-H2_nSCBayes_rprompt60Bayes_7_neck.Write("H2_nSCBayes_rprompt60Bayes_7_neck")
-H2_qpe_fprompt_7_neck.Write("H2_qpe_fprompt_7_neck")
+## Level 8
+H2_nSCBayes_rprompt60Bayes_7_fmaxpe.Write()
+H2_qpe_fprompt_7_fmaxpe.Write()
+## Level 9
+H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck.Write()
+H2_qpe_fprompt_7_fmaxpe_neck.Write()
+## Level 10
+H2_nSCBayes_rprompt60Bayes_7_fmaxpe_neck_mbR.Write()
+H2_qpe_fprompt_7_fmaxpe_neck_mbR.Write()
+## Level 11
+H2_nSCBayes_rprompt60Bayes_7_str_pulseG.Write()
+H2_qpe_fprompt_7_str_pulseG.Write()
+## Level 12
+H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ.Write()
+H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ.Write()
+## Level 13
+H2_nSCBayes_rprompt60Bayes_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+H2_qpe_fprompt_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+## Level 14
+H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon.Write()
+H2_qpe_fprompt_7_str_LAr_zCon.Write()
+## Level 15
+H2_nSCBayes_rprompt60Bayes_7_str_LAr_zrCon.Write()
+H2_qpe_fprompt_7_str_LAr_zrCon.Write()
+## Level 16
+H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon_tf2Cerenkov.Write()
+H2_qpe_fprompt_7_str_LAr_zCon_tf2Cerenkov.Write()
+## Level 17
+H2_nSCBayes_rprompt60Bayes_7_str_LAr_zrCon_tf2Cerenkov.Write()
+H2_qpe_fprompt_7_str_LAr_zrCon_tf2Cerenkov.Write()
 
-H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe.Write("H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe")
-H2_qpe_fprompt_7_neck_fmaxpe.Write("H2_qpe_fprompt_7_neck_fmaxpe")
-
-H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe_mbR.Write("H2_nSCBayes_rprompt60Bayes_7_neck_fmaxpe_mbR")
-H2_qpe_fprompt_7_neck_fmaxpe_mbR.Write("H2_qpe_fprompt_7_neck_fmaxpe_mbR")
-
-H2_nSCBayes_rprompt60Bayes_7_str_qRatio.Write("H2_nSCBayes_rprompt60Bayes_7_str_qRatio")
-H2_qpe_fprompt_7_str_qRatio.Write("H2_qpe_fprompt_7_str_qRatio")
-
-H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ.Write("H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ")
-H2_qpe_fprompt_7_str_qRatio_mbZ.Write("H2_qpe_fprompt_7_str_qRatio_mbZ")
-
-H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ_pulseG.Write("H2_nSCBayes_rprompt60Bayes_7_str_qRatio_mbZ_pulseG")
-H2_qpe_fprompt_7_str_qRatio_mbZ_pulseG.Write("H2_qpe_fprompt_7_str_qRatio_mbZ_pulseG")
 
 H2_rhoZ_0.Write()
 H2_nhitQPE_0.Write()
@@ -610,50 +645,48 @@ H1_fmaxpe_7.Write()
 H1_scintlike_7.Write()
 H1_llneutron_7.Write()
 
-H2_rhoZ_7_neck.Write()
-H2_nhitQPE_7_neck.Write()
-H2_nhitNSCB_7_neck.Write()
-H1_fmaxpe_7_neck.Write()
-H1_scintlike_7_neck.Write()
-H1_llneutron_7_neck.Write()
+H2_rhoZ_7_fmaxpe.Write()
+H2_nhitQPE_7_fmaxpe.Write()
+H2_nhitNSCB_7_fmaxpe.Write()
+H1_fmaxpe_7_fmaxpe.Write()
+H1_scintlike_7_fmaxpe.Write()
+H1_llneutron_7_fmaxpe.Write()
 
-H2_rhoZ_7_neck_fmaxpe.Write()
-H2_nhitQPE_7_neck_fmaxpe.Write()
-H2_nhitNSCB_7_neck_fmaxpe.Write()
-H1_fmaxpe_7_neck_fmaxpe.Write()
-H1_scintlike_7_neck_fmaxpe.Write()
-H1_llneutron_7_neck_fmaxpe.Write()
+H2_rhoZ_7_fmaxpe_neck.Write()
+H2_nhitQPE_7_fmaxpe_neck.Write()
+H2_nhitNSCB_7_fmaxpe_neck.Write()
+H1_fmaxpe_7_fmaxpe_neck.Write()
+H1_scintlike_7_fmaxpe_neck.Write()
+H1_llneutron_7_fmaxpe_neck.Write()
 
-H2_rhoZ_7_neck_fmaxpe_mbR.Write()
-H2_nhitQPE_7_neck_fmaxpe_mbR.Write()
-H2_nhitNSCB_7_neck_fmaxpe_mbR.Write()
-H1_fmaxpe_7_neck_fmaxpe_mbR.Write()
-H1_scintlike_7_neck_fmaxpe_mbR.Write()
-H1_llneutron_7_neck_fmaxpe_mbR.Write()
+H2_rhoZ_7_fmaxpe_neck_mbR.Write()
+H2_nhitQPE_7_fmaxpe_neck_mbR.Write()
+H2_nhitNSCB_7_fmaxpe_neck_mbR.Write()
+H1_fmaxpe_7_fmaxpe_neck_mbR.Write()
+H1_scintlike_7_fmaxpe_neck_mbR.Write()
+H1_llneutron_7_fmaxpe_neck_mbR.Write()
 
-H2_rhoZ_7_str_qRatio.Write()
-H2_nhitQPE_7_str_qRatio.Write()
-H2_nhitNSCB_7_str_qRatio.Write()
-H1_fmaxpe_7_str_qRatio.Write()
-H1_scintlike_7_str_qRatio.Write()
-H1_llneutron_7_str_qRatio.Write()
+H2_rhoZ_7_str_pulseG.Write()
+H2_nhitQPE_7_str_pulseG.Write()
+H2_nhitNSCB_7_str_pulseG.Write()
+H1_fmaxpe_7_str_pulseG.Write()
+H1_scintlike_7_str_pulseG.Write()
+H1_llneutron_7_str_pulseG.Write()
 
-H2_rhoZ_7_str_qRatio_mbZ.Write()
-H2_nhitQPE_7_str_qRatio_mbZ.Write()
-H2_nhitNSCB_7_str_qRatio_mbZ.Write()
-H1_fmaxpe_7_str_qRatio_mbZ.Write()
-H1_scintlike_7_str_qRatio_mbZ.Write()
-H1_llneutron_7_str_qRatio_mbZ.Write()
+H2_rhoZ_7_str_pulseG_cft2r_mbZ.Write()
+H2_nhitQPE_7_str_pulseG_cft2r_mbZ.Write()
+H2_nhitNSCB_7_str_pulseG_cft2r_mbZ.Write()
+H1_fmaxpe_7_str_pulseG_cft2r_mbZ.Write()
+H1_scintlike_7_str_pulseG_cft2r_mbZ.Write()
+H1_llneutron_7_str_pulseG_cft2r_mbZ.Write()
 
-H2_rhoZ_7_str_qRatio_mbZ_pulseG.Write()
-H2_nhitQPE_7_str_qRatio_mbZ_pulseG.Write()
-H2_nhitNSCB_7_str_qRatio_mbZ_pulseG.Write()
-H1_fmaxpe_7_str_qRatio_mbZ_pulseG.Write()
-H1_scintlike_7_str_qRatio_mbZ_pulseG.Write()
-H1_llneutron_7_str_qRatio_mbZ_pulseG.Write()
+H2_rhoZ_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+H2_nhitQPE_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+H2_nhitNSCB_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+H1_fmaxpe_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+H1_scintlike_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
+H1_llneutron_7_str_pulseG_cft2r_mbZ_cfb3r.Write()
 
-H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon.Write()
-H2_qpe_fprompt_7_str_LAr_zCon.Write()
 H2_rhoZ_7_str_LAr_zCon.Write()
 H2_nhitQPE_7_str_LAr_zCon.Write()
 H2_nhitNSCB_7_str_LAr_zCon.Write()
@@ -661,8 +694,6 @@ H1_fmaxpe_7_str_LAr_zCon.Write()
 H1_scintlike_7_str_LAr_zCon.Write()
 H1_llneutron_7_str_LAr_zCon.Write()
 
-H2_nSCBayes_rprompt60Bayes_7_str_LAr_zrCon.Write()
-H2_qpe_fprompt_7_str_LAr_zrCon.Write()
 H2_rhoZ_7_str_LAr_zrCon.Write()
 H2_nhitQPE_7_str_LAr_zrCon.Write()
 H2_nhitNSCB_7_str_LAr_zrCon.Write()
@@ -670,8 +701,6 @@ H1_fmaxpe_7_str_LAr_zrCon.Write()
 H1_scintlike_7_str_LAr_zrCon.Write()
 H1_llneutron_7_str_LAr_zrCon.Write()
 
-H2_nSCBayes_rprompt60Bayes_7_str_LAr_zCon_tf2Cerenkov.Write()
-H2_qpe_fprompt_7_str_LAr_zCon_tf2Cerenkov.Write()
 H2_rhoZ_7_str_LAr_zCon_tf2Cerenkov.Write()
 H2_nhitQPE_7_str_LAr_zCon_tf2Cerenkov.Write()
 H2_nhitNSCB_7_str_LAr_zCon_tf2Cerenkov.Write()
@@ -679,8 +708,6 @@ H1_fmaxpe_7_str_LAr_zCon_tf2Cerenkov.Write()
 H1_scintlike_7_str_LAr_zCon_tf2Cerenkov.Write()
 H1_llneutron_7_str_LAr_zCon_tf2Cerenkov.Write()
 
-H2_nSCBayes_rprompt60Bayes_7_str_LAr_zrCon_tf2Cerenkov.Write()
-H2_qpe_fprompt_7_str_LAr_zrCon_tf2Cerenkov.Write()
 H2_rhoZ_7_str_LAr_zrCon_tf2Cerenkov.Write()
 H2_nhitQPE_7_str_LAr_zrCon_tf2Cerenkov.Write()
 H2_nhitNSCB_7_str_LAr_zrCon_tf2Cerenkov.Write()
@@ -691,4 +718,5 @@ H1_llneutron_7_str_LAr_zrCon_tf2Cerenkov.Write()
 H_countTotal.Write()
 H_countROI.Write()
 H_countSideBand.Write()
+ntupleTF2.Write()
 fout.Close()
