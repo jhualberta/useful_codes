@@ -51,8 +51,10 @@ for fname in files:
             data2.append(radius)
             data3.append(mass)
             Hmass.Fill(radius, mass)
+            if mass>15:
+                print("???? warning: find large mass particles>15 ng, m=", round(mass,2), "ng. please check this file: ","topEdge"+fname[fname.index('Edge')+4:fname.index('Edge')+6])
             if area>1000:
-                print("???? warning: find large area particles>1000 um^2", round(area,2), "please check this file: ",fname)
+                print("???? warning: find large area particles>1000 um^2, S=", round(area,2), "mm^2. please check this file: ","topEdge"+fname[fname.index('Edge')+4:fname.index('Edge')+6])
         if len(data1)>warning_points:
             print("warning: find ", len(data1), ", more than 500 dusts, please check this file: ",fname)
     dataFile1.append(data1)
@@ -75,18 +77,16 @@ for fdata in dataFile2:
 
 countDust = Hradius.Integral()
 countMass = Hmass.Integral()
-print("Analyzed", countPic, "pictures")
-print("Counts ", countDust, "dusts.")
-print("mass", round(countMass,2), "ng.")
+print("Analyzed " + str(countPic) + " pictures")
+print("Counts " + str(countDust) + " dusts.")
+print("mass " + str(round(countMass,4)) + "ng.")
 ### totalArea is in mm^2, so switch to 1./100 cm^2
-print("Density ", round(countMass/(totalArea/100*countPic),2), " ng/cm^2")
-
+print("Density "+str(round(countMass/(totalArea/100*countPic),4))+" ng/cm^2")
 
 ff = TFile("save_processed.root","recreate")
 ff.cd()
 Harea.Write()
 Hradius.Write()
 Hmass.Write()
-
 
 #print(dataFile)

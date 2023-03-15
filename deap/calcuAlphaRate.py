@@ -7,7 +7,14 @@ import rat
 from ROOT import *
 from array import array
 
-checkLevel = 2 
+checkLevel = 9 
+
+ffroi = TFile("saveSideBandROI.root")
+####roi_802_days_11March2020_nsc_rp60.root")
+roicut = ffroi.Get("roi")
+roicut.SetName("roicut")
+sidebandcut = ffroi.Get("cutSideBand")
+sidebandcut.SetName("cutSideBand")
 
 #import statistics
 #362 remove bad: 31863, 31975, 31871, 31265
@@ -62,11 +69,14 @@ runGood = []
 livetimeGood = []
 i = 0
 processedData = []
-hnscbVsRprompt = TH2F("hnscbVsRprompt", "nSCBayes vs rprompt60Bayes", 2000, 0, 2000, 100, 0, 1)
-hqpeVsFprompt = TH2F("hqpeVsFprompt", "qpe vs fprompt", 2000, 0, 2000, 100, 0, 1)
 
-data_variables_single = []
-data_variables_double = []
+data_variables_single = [ [] for i in range(7) ]
+data_variables_double = [ [] for i in range(7) ]
+
+countROIsingle = [0 for i in range(7)] ## start from level 4
+countROIdouble = [0 for i in range(7)]
+countSBsingle = [0 for i in range(7)] ## start from level 4
+countSBdouble = [0 for i in range(7)]
 
 for data in rawdata:
      fname = "Merged_OptLowThresh_" + str(data[0]) + ".root"
@@ -82,39 +92,63 @@ for data in rawdata:
      t1 = ff.Get("T1")
      t2 = ff.Get("T2")
 
-     qpe1 = array('f',[0]) #unsigned int
-     nSCBayes1 = array('f',[0]) #unsigned double 
-     fprompt1 = array('f',[0]) #unsigned double 
-     fmaxpe1 = array('f',[0]) #unsigned double 
-     rprompt1 = array('f',[0]) #unsigned double 
+     qpe1 = array('f',[0]) 
+     nscb1 = array('f',[0])
+     fprompt1 = array('f',[0])
+     fmaxpe1 = array('f',[0]) 
+     rprompt1 = array('f',[0])
      eventTime1 = array('f',[0])
      subeventN1 = array('f',[0])
+     evtx1 = array('f',[0])
+     evty1 = array('f',[0])
+     evtz1 = array('f',[0])
      nhit1 = array('i',[0])
-
+     numEarlyPulses1 = array('f',[0])
+     subeventN1 = array('f',[0])
+     neckVeto1 = array('f',[0])
      t1.SetBranchAddress("qpe",qpe1)
      t1.SetBranchAddress("fprompt",fprompt1)
-     t1.SetBranchAddress("nSCBayes",nSCBayes1)
+     t1.SetBranchAddress("nSCBayes",nscb1)
      t1.SetBranchAddress("rprompt60Bayes",rprompt1)
      t1.SetBranchAddress("eventTime", eventTime1)
      t1.SetBranchAddress("subeventN", subeventN1)
      t1.SetBranchAddress("nhit", nhit1)
-  
-     qpe2 = array('f',[0]) #unsigned int
-     nSCBayes2 = array('f',[0]) #unsigned double 
-     fprompt2 = array('f',[0]) #unsigned double 
-     fmaxpe2 = array('f',[0]) #unsigned double 
-     rprompt2 = array('f',[0]) #unsigned double 
+     t1.SetBranchAddress("numEarlyPulses", numEarlyPulses1) 
+     t1.SetBranchAddress("subeventN", subeventN1)
+     t1.SetBranchAddress("fmaxpe", fmaxpe1)
+     t1.SetBranchAddress("neckVeto", neckVeto1)
+     t1.SetBranchAddress("evtx", evtx1)
+     t1.SetBranchAddress("evty", evty1)
+     t1.SetBranchAddress("evtz", evtz1)
+
+     qpe2 = array('f',[0]) 
+     nscb2 = array('f',[0])
+     fprompt2 = array('f',[0])
+     fmaxpe2 = array('f',[0])
+     rprompt2 = array('f',[0]) 
      eventTime2 = array('f',[0])
      subeventN2 = array('f',[0])
+     evtx2 = array('f',[0])
+     evty2 = array('f',[0])
+     evtz2 = array('f',[0])
      nhit2 = array('i',[0])
-
+     numEarlyPulses2 = array('f',[0])
+     subeventN2 = array('f',[0])
+     neckVeto2 = array('f',[0])
      t2.SetBranchAddress("qpe",qpe2)
      t2.SetBranchAddress("fprompt",fprompt2)
-     t2.SetBranchAddress("nSCBayes",nSCBayes2)
+     t2.SetBranchAddress("nSCBayes",nscb2)
      t2.SetBranchAddress("rprompt60Bayes",rprompt2)
      t2.SetBranchAddress("eventTime", eventTime2)
      t2.SetBranchAddress("subeventN", subeventN2)
      t2.SetBranchAddress("nhit", nhit2)
+     t2.SetBranchAddress("numEarlyPulses", numEarlyPulses2)
+     t2.SetBranchAddress("subeventN", subeventN2)
+     t2.SetBranchAddress("fmaxpe", fmaxpe2)
+     t2.SetBranchAddress("neckVeto", neckVeto2)
+     t2.SetBranchAddress("evtx", evtx2)
+     t2.SetBranchAddress("evty", evty2)
+     t2.SetBranchAddress("evtz", evtz2)
 
      hncluster1 = TH1F("hncluster1","",3,0,3)
      hncluster2 = TH1F("hncluster2","",3,0,3)
@@ -123,9 +157,9 @@ for data in rawdata:
      cutLevel4 = "numEarlyPulses <=3"          
      cutLevel5 = "&& subeventN <= 1"
      cutLevel6 = "&& eventTime > 2250 && eventTime < 2700"
-     #cutLevel7 = "&& fmaxpe<0.4"
-     cutLevel7 = "&& qpe>200"
-     cutLevel8 = "&& fmaxpe<0.4"
+     cutLevel7 = "&& fmaxpe<0.4"
+     cutLevel8 = "&& qpe>200"
+     #cutLevel8 = "&& fmaxpe<0.4"
      cutLevel9 = "&& neckVeto == 0"
      cutLevel10 = "&& sqrt(evtx*evtx+evty*evty+evtz*evtz)<830"
      cutLevel11 = "&& pulseindexfirstgar > 2"
@@ -135,21 +169,14 @@ for data in rawdata:
      #cutLevel15 = "" ## mb-tf2 R
      t1.Project("hncluster1", "ncluster")
      t2.Project("hncluster2", "ncluster")
-     t1.Project("hnscbVsRprompt", "rprompt60Bayes:nSCBayes")
-     t2.Project("hqpeVsFprompt", "fprompt:qpe")
-     var = (nscb, rprompt, qpe, fprompt, nhit)
-
+     ## calculate the numbers of cluster, with levels of cuts
      if checkLevel == 4:
         t1.Project("hncluster1", "ncluster", cutLevel4)
         t2.Project("hncluster2", "ncluster", cutLevel4)
-        if numEarlyPulses<=3:
-            data_variables.append(var)
 
      if checkLevel == 5:
         t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5)
         t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5)
-        if numEarlyPulses<=3 && subeventN <= 1:
-            data_variables.append(var)
 
      if checkLevel == 6:
         t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6)
@@ -158,30 +185,18 @@ for data in rawdata:
      if checkLevel == 7:
         t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7)
         t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7)
-     
-     if checkLevel == 8: 
+
+     if checkLevel == 8:
         t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8 )
         t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8 )
- 
+
      if checkLevel == 9:
         t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9 )
         t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9 )
- 
+
      if checkLevel == 10:
         t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10 )
         t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10 )
-
-     if checkLevel == 11:
-        t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10+cutLevel11 )
-        t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10+cutLevel11 )
-     
-     if checkLevel == 12:
-        t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10+cutLevel11+cutLevel12 )
-        t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10+cutLevel11+cutLevel12 )
-     
-     if checkLevel == 13:
-        t1.Project("hncluster1", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10+cutLevel11+cutLevel12+cutLevel13 )
-        t2.Project("hncluster2", "ncluster", cutLevel4+cutLevel5+cutLevel6+cutLevel7+cutLevel8+cutLevel9+cutLevel10+cutLevel11+cutLevel12+cutLevel13 )
 
      n1val = hncluster1.Integral()
      n2val = hncluster2.Integral()
@@ -193,14 +208,98 @@ for data in rawdata:
      livetimeGood.append(round(data[1],3)) ### !! unit:days
      processedData.append(data)
      countGood += 1
-
      ## print runname, n1val, n2val
 
+     # Fill 2D histos by levels of cuts
+     # !!!!check single-cluster
+     for i in range(t1.GetEntries()):
+       t1.GetEntry(i)
+       var1 = (nscb1[0], rprompt1[0], qpe1[0], fprompt1[0], nhit1[0])
+       ## ----start with level 4
+       if numEarlyPulses1[0] <= 3:
+         data_variables_single[0].append(var1)
+         if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[0] += 1
+         if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[0] += 1
+         ## ----level 5 
+         if subeventN1[0] <= 1:
+            data_variables_single[1].append(var1)
+            if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[1] += 1
+            if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[1] += 1
+            ## ----level 6
+            if eventTime1[0] > 2250 and eventTime1[0] < 2700:     
+               data_variables_single[2].append(var1)
+               if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[2] += 1
+               if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[2] += 1
+               ## ----level 7
+               if fmaxpe1[0]<0.4:
+                   data_variables_single[3].append(var1)
+                   if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[3] += 1
+                   if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[3] += 1
+                   ## ----level 8
+                   if qpe1[0]>200:  
+                      data_variables_single[4].append(var1)
+                      if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[4] += 1
+                      if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[4] += 1
+                      ## ----level 9
+                      if neckVeto1[0] == 0:
+                         data_variables_single[5].append(var1)
+                         if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[5] += 1
+                         if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[5] += 1
+                         ## ----level 10
+                         if sqrt(evtx1[0]*evtx1[0]+evty1[0]*evty1[0]+evtz1[0]*evtz1[0])<830:
+                            data_variables_single[6].append(var1)
+                            if roicut.IsInside(nscb1[0], rprompt1[0]): countROIsingle[6] += 1
+                            if sidebandcut.IsInside(nscb1[0], rprompt1[0]): countSBsingle[1] += 1
+
+     # !!!!check double-cluster
+     for i in range(t2.GetEntries()):
+       t2.GetEntry(i)
+       var2 = (nscb2[0], rprompt2[0], qpe2[0], fprompt2[0], nhit2[0])
+       ## ----start with level 4
+       if numEarlyPulses2[0] <= 3:
+         data_variables_double[0].append(var2)
+         if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[0] += 1
+         if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[0] += 1 
+         ## ----level 5 
+         if subeventN2[0] <= 1:
+            data_variables_double[1].append(var2)
+            if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[1] += 1
+            if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[1] += 1
+            ## ----level 6
+            if eventTime2[0] > 2250 and eventTime2[0] < 2700:
+               data_variables_double[2].append(var2)
+               if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[2] += 1
+               if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[2] += 1
+               ## ----level 7
+               if fmaxpe2[0]<0.4:
+                   data_variables_double[3].append(var2)
+                   if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[3] += 1
+                   if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[3] += 1
+                   ## ----level 8
+                   if qpe2[0]>200:
+                      data_variables_double[4].append(var2)
+                      if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[4] += 1
+                      if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[4] += 1
+                      ## ----level 9
+                      if neckVeto2[0] == 0:
+                         data_variables_double[5].append(var2)
+                         if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[5] += 1
+                         if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[5] += 1
+                         ## ----level 10
+                         if sqrt(evtx2[0]*evtx2[0]+evty2[0]*evty2[0]+evtz2[0]*evtz2[0])<830:
+                            data_variables_double[6].append(var2)
+                            if roicut.IsInside(nscb2[0], rprompt2[0]): countROIdouble[6] += 1
+                            if sidebandcut.IsInside(nscb2[0], rprompt2[0]): countSBdouble[6] += 1
 
 print "Good runs for analysis:", countGood
 #### odd runs
 ## 30681, 30686, 30743, 30751, 30785
 print "after removing live time too short:", sum(livetimeGood), "days"
+print "count ROI single, level 4 to 10", countROIsingle
+print "count ROI double, level 4 to 10", countROIdouble 
+
+print "count sideband single, level 4 to 10", countSBsingle
+print "count sideband double, level 4 to 10", countSBdouble
 
 pars =[1.5, 0.0625, 1.0625, 0.5]
 #haojie
@@ -266,19 +365,70 @@ print "Cluster convert to mHz", round(np.mean(bad_nSingle)/3600/24*1000 , 2), "+
 print "Cluster average n2 rates over runs", round(np.mean(bad_nDouble),3), "+-", round(np.std(bad_nDouble),3)
 print "Cluster convert to mHz", round(np.mean(bad_nDouble)/3600/24*1000, 2), "+-", round(np.std(bad_nDouble)/3600/24*1000,2)
 
+# var2 = (nscb2, rprompt2, qpe2, fprompt2, nhit2)
 
-#plt.scatter(runCut, nAV,alpha=0.8, marker='s')
-#plt.scatter(runCut, nTPB, alpha=0.8, marker='o')
-#plt.xlabel("run")
-#plt.ylabel("events/day")
-#plt.errorbar(runCut, nAV, yerr=np.std(nAV))
-#plt.errorbar(runCut, nTPB, yerr=np.std(nTPB))
-#plt.grid()
-#plt.legend(["AV","TPB"], loc='upper right')#, loc='upper left')
-#plt.show()
+Levels_hSingle_nscbVsRprompt = []
+Levels_hSingle_qpeVsFprompt = []
+Levels_hDouble_nscbVsRprompt = []
+Levels_hDouble_qpeVsFprompt = []
+
+for ii in range(7):
+   hSingle_nscbVsRprompt = TH2F("hSingle_nscbVsRprompt", "nSCBayes vs rprompt60Bayes", 2000, 0, 2000, 100, 0, 1)
+   hSingle_qpeVsFprompt = TH2F("hSingle_qpeVsFprompt", "qpe vs fprompt", 2000, 0, 2000, 100, 0, 1)
+   hDouble_nscbVsRprompt = TH2F("hDouble_nscbVsRprompt", "nSCBayes vs rprompt60Bayes", 2000, 0, 2000, 100, 0, 1)
+   hDouble_qpeVsFprompt = TH2F("hDouble_qpeVsFprompt", "qpe vs fprompt", 2000, 0, 2000, 100, 0, 1)
+
+   hSingle_nscbVsRprompt.SetName("hSingle_nscbVsRprompt_L"+str(ii+4))
+   Levels_hSingle_nscbVsRprompt.append(hSingle_nscbVsRprompt)
+   hSingle_qpeVsFprompt.SetName("hSingle_qpeVsFprompt_L"+str(ii+4))
+   Levels_hSingle_qpeVsFprompt.append(hSingle_qpeVsFprompt)
+   hDouble_nscbVsRprompt.SetName("hDouble_nscbVsRprompt_L"+str(ii+4))
+   Levels_hDouble_nscbVsRprompt.append(hDouble_nscbVsRprompt)
+   hDouble_qpeVsFprompt.SetName("hDouble_qpeVsFprompt_L"+str(ii+4))
+   Levels_hDouble_qpeVsFprompt.append(hDouble_qpeVsFprompt)
+
+   hSingle_nscbVsRprompt.Reset()
+   hSingle_qpeVsFprompt.Reset()
+   hDouble_nscbVsRprompt.Reset()
+   hDouble_qpeVsFprompt.Reset()
+   Levels_hSingle_nscbVsRprompt[ii].SetDirectory(0)
+   Levels_hSingle_qpeVsFprompt[ii].SetDirectory(0)
+   Levels_hDouble_nscbVsRprompt[ii].SetDirectory(0)
+   Levels_hDouble_qpeVsFprompt[ii].SetDirectory(0)
 
 
+print "why no???", Levels_hDouble_qpeVsFprompt
+for ii in range(7):
+   for data in data_variables_single[ii]:
+       Levels_hSingle_nscbVsRprompt[ii].Fill(data[0], data[1])
+       Levels_hSingle_qpeVsFprompt[ii].Fill(data[2], data[3])
+ 
+   for data in data_variables_double[ii]:
+       Levels_hDouble_nscbVsRprompt[ii].Fill(data[0], data[1])
+       Levels_hDouble_qpeVsFprompt[ii].Fill(data[2], data[3])
 
-hnscbVsRprompt.Draw("colz")
+###plt.scatter(runCut, nAV,alpha=0.8, marker='s')
+###plt.scatter(runCut, nTPB, alpha=0.8, marker='o')
+###plt.xlabel("run")
+###plt.ylabel("events/day")
+###plt.errorbar(runCut, nAV, yerr=np.std(nAV))
+###plt.errorbar(runCut, nTPB, yerr=np.std(nTPB))
+###plt.grid()
+###plt.legend(["AV","TPB"], loc='upper right')#, loc='upper left')
+###plt.show()
+##
+ff = TFile("save_levels_alpha.root","recreate")
+ff.cd()
+for ii in range(7):
+   ##Levels_hSingle_nscbVsRprompt[ii].SetDirectory(0)
+   ##Levels_hSingle_qpeVsFprompt[ii].SetDirectory(0)
+   ##Levels_hDouble_nscbVsRprompt[ii].SetDirectory(0)
+   ##Levels_hDouble_qpeVsFprompt[ii].SetDirectory(0)
 
-raw_input("enter")
+   Levels_hSingle_nscbVsRprompt[ii].Write()
+   Levels_hSingle_qpeVsFprompt[ii].Write()
+   Levels_hDouble_nscbVsRprompt[ii].Write()
+   Levels_hDouble_qpeVsFprompt[ii].Write()
+##
+#hnscbVsRprompt.Draw("colz")
+#raw_input("enter")
