@@ -12,6 +12,10 @@ from datetime import datetime, time as datetime_time, timedelta
 from array import array
 global qc
 PI = np.pi
+fportionCut = 30
+fdistCut = 600
+nHiQpmt = 6
+#pmtInfo = RAT.PMTInfoUtil.GetPMTInfoUtil()
 
 def Distance(V1, V2):
     '''the distance betwwen two PMTs on the surface of the sphere/detector'''
@@ -34,10 +38,9 @@ def N_near_pmts(N_pmts, event_position):
         ID.append(Sorted_Dic[i][0])
     return Sorted_Dic[:N_pmts], ID
 
-
 print "now processing %s\n"%(sys.argv[1])
 file0 = str(sys.argv[1])
-check_eventID = str(sys.argv[2])
+#check_eventID = str(sys.argv[2])
 
 fileName = os.path.basename(file0)
 ## print "will read from files %s and write to file %s\n"%(sys.argv[1],sys.argv[2])
@@ -48,9 +51,9 @@ Dir=sys.argv[1]
 fout = TFile("outSinaCeren_"+fileName,"RECREATE");
 
 results = db.view('WebView/PMTPos', include_docs=True)
-Phi = {}#np.zeros(255)
+Phi = {} #np.zeros(255)
 CosTheta = {}#np.zeros(255)
-index = np.zeros(255,dtype = int)
+index = {} #np.zeros(255,dtype = int)
 
 ## buil PMT look-up tables
 for row in results:
@@ -60,10 +63,15 @@ for row in results:
          CosTheta[int(row.key)] = np.cos(row.doc["locationTheta"]*PI/180)
          index[int(row.key)] = int(row.key)
 
-pmtPos = []  ## Cartesian coordination
-for x in zip(CosTheta, Phi):
-    pmtPos.append(TVector3(np.sqrt(1.0-x[0]*x[0])*np.cos(x[1]),np.sqrt(1.0-x[0]*x[0])*np.sin(x[1]),x[0]))
+pmtPos = {}
+for pmtId in CosTheta.keys():
+     phi = Phi[pmtId]
+     costheta = CosTheta[pmtId] 
+     pmtPos[pmtId] = TVector3(np.sqrt(1.0-costheta*costheta)*np.cos(phi), np.sqrt(1.0-costheta*costheta)*np.sin(phi), costheta)
 
+#pmtPos = []  ## Cartesian coordination
+#for x in zip(CosTheta, Phi):
+#    pmtPos.append(TVector3(np.sqrt(1.0-x[0]*x[0])*np.cos(x[1]), np.sqrt(1.0-x[0]*x[0])*np.sin(x[1]), x[0]))
 
 runIDval = array('l',[0])
 subrunIDval = array('l',[0])
@@ -89,9 +97,22 @@ nPMTs1 = array('i',[0])
 pmtPhi1 = array('f',Nmax*[0])
 pmtCosTheta1 = array('f',Nmax*[0])
 pmttime1 = array('f',Nmax*[0]) # SubpeakTime
-charge1 = array('f',Nmax*[0])
-pmtPortion1 = array('f',Nmax*[0])
+timeRes1 = array('f',Nmax*[0]) 
+charge1 = array('f',Nmax*[0]) # save pmt.qPE
+chargePrompt1 = array('f',Nmax*[0]) # save pmt.qPrompt
+#pmtPortion1 = array('f',Nmax*[0])
 pmtFmaxpeVal = array('f',[0])
+
+pmtPhi6 = array('f',nHiQpmt*[0])
+pmtCosTheta6 = array('f',nHiQpmt*[0])
+pmttime6 = array('f',nHiQpmt*[0]) # SubpeakTime
+timeRes6 = array('f',nHiQpmt*[0])
+charge6 = array('f',nHiQpmt*[0])
+chargePrompt6 = array('f',nHiQpmt*[0])
+pmtPortion6 = array('f',(nHiQpmt-1)*[0]) ##NOTE: portion to the P0, so only 5 PMTs
+pmtPortion2 = array('f',1*[0])
+dist_cherVal = array('f', (nHiQpmt-1)*[0]) ##NOTE: distances to the P0, so only 5 PMTs
+dist_cher2Val = array('f', [0])
 
 tree1 = TTree("T1","saveEvent")
 tree1.Branch("runID",runIDval,"runID/L")
@@ -107,8 +128,20 @@ tree1.Branch("nPMTs",nPMTs1, "nPMTs/I")
 tree1.Branch("pmtPhi", pmtPhi1, "pmtPhi[nPMTs]/F")
 tree1.Branch("pmtCosTheta", pmtCosTheta1, "pmtCosTheta[nPMTs]/F")
 tree1.Branch("pmttime", pmttime1, "pmttime[nPMTs]/F")
+tree1.Branch("timeRes", timeRes1, "timeRes[nPMTs]/F")
 tree1.Branch("charge", charge1, "charge[nPMTs]/F")
-tree1.Branch("pmtPortion", pmtPortion1, "pmtPortion[nPMTs]/F")
+tree1.Branch("chargePrompt", chargePrompt1, "chargePrompt[nPMTs]/F")
+
+## just check the 6 PMTs for each event
+tree1.Branch("pmtPhi6", pmtPhi6, "pmtPhi6[6]/F")
+tree1.Branch("pmtCosTheta6", pmtCosTheta6, "pmtCosTheta6[6]/F")
+tree1.Branch("timeRes6", timeRes6, "timeRes6[6]/F")
+tree1.Branch("charge6", charge6, "charge6[6]/F")
+tree1.Branch("chargePrompt6", chargePrompt6, "chargePrompt6[6]/F")
+tree1.Branch("pmtPortion6", pmtPortion6, "pmtPortion6[5]/F")
+tree1.Branch("pmtPortion2", pmtPortion2, "pmtPortion2[1]/F")
+tree1.Branch("dist_cher", dist_cherVal, "dist_cher[5]/F")
+tree1.Branch("dist_cher2", dist_cher2Val, "dist_cher2/F")
 
 tree1.Branch("pmtFmaxpe", pmtFmaxpeVal, "pmtFmaxpe/F")
 tree1.Branch("nSCBayes", nSCBayesVal, "nSCBayes/F") # GetNSCBayes()
@@ -142,140 +175,237 @@ for event in range(nentries):
             if ( CAL.GetCuts().GetCutWord()&0x31f8 ):  continue; # Low level cut, NOTE: use 0x199 if looking at data between May-Aug 2016 processed in 2016
             if ( TS.dtmTrigSrc&0x82                ):  continue; # Low level cut, remove internal/external/ periodic and muon veto triggers
             if ( EV.deltat <= 20000                ):  continue; # deltat cut on 20 us
-            #if ( CAL.GetSubeventCount() > 1        ):  continue; # pile-up cut, removes coincidence events
-            #if ( CAL.GetEventTime() <= 2250        ):  continue; # pre-trigger pile up cut, not typically identified by subeventN
-            #if ( CAL.GetEventTime() >= 2700        ):  continue; # post-trigger pile up cut, strongly correlated with subeventN
-            #if ( CAL.numEarlyPulses > 3            ):  continue; # Cut on a significant amount of early light pulses in the first 1600 ns of the waveform
+            if ( CAL.GetSubeventCount() > 1        ):  continue; # pile-up cut, removes coincidence events
+            if ( CAL.GetEventTime() <= 2250        ):  continue; # pre-trigger pile up cut, not typically identified by subeventN
+            if ( CAL.GetEventTime() >= 2700        ):  continue; # post-trigger pile up cut, strongly correlated with subeventN
+            if ( CAL.numEarlyPulses > 3            ):  continue; # Cut on a significant amount of early light pulses in the first 1600 ns of the waveform
             ### if ( EV.GetFmaxpe() < 0.15             ):  continue; #
             #if ( EV.GetFmaxpe() > 0.4              ):  continue; #
             #if ( CAL.GetFprompt() > 0.55           ):  continue; # was >0.58
-            #if ( CAL.GetQPE() <= 60               ):  continue; # Skip events that have no charge information (primarily pre-scaled events), was <200
+            if ( CAL.GetQPE() <=60               ):  continue; # Skip events that have no charge information (primarily pre-scaled events), was <200
 
             ################################################################################################################################################
             #Inside the for loop of your events:
+            ### Fill the tree
             eventID = TS.GetEventID();
-            qpe = CAL.GetQPE() 
+            runIDval[0] = DS.GetRunID();
+            subrunIDval[0] = DS.GetSubrunID();
+            evtID[0] = eventID
+            qPE = CAL.GetQPE()
+            nSCBayesVal[0] = CAL.GetNSCBayes()
+            rprompt60BayesVal[0] = EV.GetRprompt60Bayes()
+            qpeVal[0] = qPE
+            fpromptVal[0] = CAL.GetFprompt()
+            fmaxpeVal[0] = EV.GetFmaxpe()
+            nhitVal[0] = int(ord(CAL.GetLateNhit()))
+
+            notValidFit = False
+            validMB = True
+            validTF2 = True
+            ### Event Reconstruction MB likelihood valid
+            try:
+               posx = EV.mblikelihood.GetPosition().X(); posy = EV.mblikelihood.GetPosition().Y(); posz = EV.mblikelihood.GetPosition().Z();
+            except:
+               posx = -9999; posy = -9999; posz = -9999;
+               validMB = False
+
+            try:
+                posx1 = EV.timefit2.GetPosition().X();    posy1 = EV.timefit2.GetPosition().Y(); posz1 = EV.timefit2.GetPosition().Z();
+            except:
+                posx1 = -9999; posy1 = -9999; posz1 = -9999;
+                validTF2 = False
+
+            notValidFit = validMB + validTF2
+            if notValidFit == 0:
+                print "no valid fit"
+                continue
+
+            evtx[0] = posx; evty[0] = posy; evtz[0] = posz;
+
             ## just check interested eventID
-            if eventID != int(check_eventID): continue
+            ## if eventID != int(check_eventID): continue
+
+            lastGArPMTID = 64
+            if runIDval[0] < 17361 or runIDval[0] > 27610:
+                print "liquid PMT, don't care"
+                lastGArPMTID = 254
 
             # Step 1: take the charge and the pmt ids
             pmt_charge = {}
+            chargeTemp = {}
+            chargePromptTemp = {}
             nPMT = CAL.GetPMTCount()
             nPMTs1[0] = nPMT
-            pmtTime = {} #np.zeros(255);
+            pmtTimeTemp = {} #np.zeros(255);
+            timeResTemp = {}
+            #pmtInfo.SetRunAndSubrun(runIDval[0], subrunIDval[0])
             for iPMT in range(nPMT):
-            	pmt = CAL.GetPMT(iPMT)
-            	pmt_id = pmt.GetID()
-            	pmt_qPE = pmt.qPE
-            	pmt_charge[pmt_id] = pmt_qPE
+                pmt = CAL.GetPMT(iPMT)
+                pmt_id = pmt.GetID()
+                ## NOTE: only for data, not for MC
+                #if pmtInfo.IsPMTGoodForAnalysis(pmt) == False: continue ### !!! added 15 Nov 2022
+                #spe = pmtInfo.GetSPECharge(pmt) ### !!! added 15 Nov 2022
+                #if not(spe>0): continue ### !!! added 15 Nov 2022
+
+                pmt_qPE = pmt.qPE
+                #or qPrompt
+                pmt_qprompt = pmt.qPrompt
+                pmt_charge[pmt_id] = pmt_qPE
+
+                ### NOTE: for LAr runs, only checking PMTs in the GAr region, or pmtID<=64
+                if pmt_id>lastGArPMTID:
+                   continue
+
+                pmtPhi1[iPMT] = Phi[pmt_id]
+                pmtCosTheta1[iPMT] = CosTheta[pmt_id]
+                #pmttime1[pmt_id] = pmtTime[pmt_id]
+
+                charge1[iPMT] = pmt_qPE ## for the charges of 6 pmt
+                chargePrompt1[iPMT] = pmt_qprompt
+
+                chargeTemp[pmt_id] = pmt_qPE
+                chargePromptTemp[pmt_id] = pmt_qprompt
                 saveSubpeakTime = []
-                pmtTime[pmt_id] = 100000
+                pmtTimeTemp[pmt_id] = 100000
                 for j in range (pmt.GetPulseCount()): ## loop PMTs
                     PULSE = pmt.GetPulse(j)
                     for ipeak in range(PULSE.GetSubpeakCount()): ## loop subpeaks for a PMT
                         time = PULSE.GetSubpeakTime(ipeak) ##
-                        if time < pmtTime[pmt_id]:
+                        if time < pmtTimeTemp[pmt_id]:
                             saveSubpeakTime.append(time)
                 if len(saveSubpeakTime)>0:
-                    pmtTime[pmt_id] = min(saveSubpeakTime)
-                else: pmtTime[pmt_id] = 0
+                    pmtTimeTemp[pmt_id] = min(saveSubpeakTime)
+                    pmttime1[iPMT] = pmtTimeTemp[pmt_id]
+                    timeRes1[iPMT] = pmtTimeTemp[pmt_id] - CalTrigTime
+                else: 
+                    pmtTimeTemp[pmt_id] = 0
+                    pmttime1[iPMT] = 0 
+                    timeRes1[iPMT] = 0
 
             ################################################################################################################################################
             # Step 2: Sort the PMT ids based on their charge in an decreasing order; i.e first item is the brightest PMT
             pmt_charge_sorted = sorted(pmt_charge.items(), key=lambda x:x[1], reverse=True)
-            pmt_id, charge = [], []
+            pmtidSorted, chargeSorted = [], []
             for pmtdata in pmt_charge_sorted:
-                pmt_id.append(pmtdata[0])
-                charge.append(pmtdata[1])
+                ## print "!!! pmt data", pmtdata[0], pmtdata[1]
+                pmtidSorted.append(pmtdata[0])
+                chargeSorted.append(pmtdata[1])
+            ## print "!!!!! sorted PMT", pmt_charge_sorted
+
+            if len(pmtidSorted)<2: ## less than 2 PMTs, abort this event-->under-estimate total events!!
+               #print "too few PMTs, skip this event!"
+               continue
+
             ################################################################################################################################################
             # Step3 : take the charge ratio and the distance of the 5 next brightest PMTs, to THE brightest PMT in the event
             
             # NOTE: **pmtPos** is a list of offline PMT vector positions where the zeroth element corresponds to PMTID=0
-            maxcharge_vector = TVector3(pmtPos[pmt_id[0]][0], pmtPos[pmt_id[0]][1], pmtPos[pmt_id[0]][2])
-            maxcharge_vector.SetMag(851) ## Project PMT position to AV sphere!!!
+            pmtid_maxQ = pmtidSorted[0]
+            maxQ = chargeSorted[0]
+            pmtPos_maxq = TVector3(pmtPos[pmtid_maxQ][0], pmtPos[pmtid_maxQ][1], pmtPos[pmtid_maxQ][2])
+            pmtPos_maxq.SetMag(851) ## Project PMT position to AV sphere!!!
             
             distances = []
-            portions  = []
-            rangePMT = 6
-            if len(pmt_id)<6:
-                rangePMT = len(pmt_id)
+            rangePMT = nHiQpmt 
+            if len(pmtidSorted)<nHiQpmt:
+                rangePMT = len(pmtidSorted)
+            ## pmtidSorted saves the pmt ids after sorting
+           
+            portionsTemp = []
+            distanceTemp = []
+            pmtDir6= []
+            pmtDir6_truePos = []
 
+            ## for the 6 pmts after charge sorting
+            
             for i in range(rangePMT):#i==0 is the brightest PMT itself.
-                pmtid = pmt_id[i]
+                pmtid = pmtidSorted[i]
                 temp_vector = TVector3(pmtPos[pmtid][0], pmtPos[pmtid][1], pmtPos[pmtid][2])
                 temp_vector.SetMag(851)
-                # print( pmt_id[i], int(charge[i]*100./charge[0]), int(charge[i]*100./qPE), round((maxcharge_vector-temp_vector).Mag(),2))
-            
-                # print( pmt_id[i], int(charge[i]*100./charge[0]), int(charge[i]*100./qPE), round(Distance(maxcharge_vector, temp_vector),2))
-                distances.append(Distance(maxcharge_vector, temp_vector))
-                portions.append(charge[i]*100./charge[0])
 
-                pmtPhi1[i] = Phi[pmtid]
-                pmtCosTheta1[i] = CosTheta[pmtid]
-                pmttime1[i] = pmtTime[pmtid]
-                charge1[i] = charge[i]
+                # print( pmt_id[i], int(chargeSorted[i]*100./chargeSorted[0]), int(chargeSorted[i]*100./qPE), round((pmtPos_maxq-temp_vector).Mag(),2))
 
-                pmtPortion1[i] = charge[i]*100./charge[0]
+                pmtPhi6[i] = temp_vector.Phi()
+                pmtCosTheta6[i] = temp_vector.CosTheta()
+                timeRes6[i] = pmtTimeTemp[pmtid] - CalTrigTime
+                if pmtTimeTemp[pmtid] == 0:
+                    timeRes6[i] = 0
+                charge6[i] = chargeTemp[pmtid]
+                chargePrompt6[i] = chargePromptTemp[pmtid] 
+                pmtpos = temp_vector
+                posEvent =  TVector3(posx, posy, posz)
+
+                # print( pmt_id[i], int(charge[i]*100./charge[0]), int(charge[i]*100./qPE), round(Distance(pmtPos_maxq, temp_vector),2))
+                #distances.append(Distance(pmtPos_maxq, temp_vector))
+                portion = chargeSorted[i]*100./maxQ
+                portionsTemp.append(portion) ### or sort(chargeTemp)
+                dist0 = (pmtPos_maxq - temp_vector).Mag()
+                distanceTemp.append(dist0)
+                if i>1:
+                   pmtPortion6[i-1] = portion
+                   dist_cherVal[i-1] = dist0
+                   distances.append(dist0)#Distance(pmtPos_maxq, temp_vector))
+                if i==1:
+                   pmtPortion6[i-1] = portion
+                   pmtPortion2[i-1] = portion
+                   dist_cherVal[i-1] = dist0 
+                   dist_cher2Val[0] = dist0## only save the 2nd Q PMT
+                   distances.append(dist0)#Distance(pmtPos_maxq, temp_vector))
+                #pmtPhi1[i] = Phi[pmtid]
+                #pmtCosTheta1[i] = CosTheta[pmtid]
+                #pmttime1[i] = pmtTime[pmtid]
+                #charge1[i] = charge[i] ## for the charges of 6 pmt
+
                 # tagCluster1[kk] = 1
                 # print "pmtid", pmtid, kk, pmtPhi1[kk], pmtCosTheta1[kk], pmttime1[kk], charge1[kk], pmttime_unicor1[kk]
-                             ## print "!!!!! tree1.Fill count", countTrig_afterCuts       
-
+                ## print "!!!!! tree1.Fill count", countTrig_afterCuts
             ################################################################################################################################################
             # Step 4: apply the cut
-            remove_event = False
-            rangePMT = 6
-            if len(pmt_id)<6:
-                rangePMT = len(pmt_id)
+            is_dbCherenkov_like = False
+
+            record1stPMTid = -9999
+            record2ndPMTid = -9999 # for 2nd highest charge PMT
+            dist_temp = -9999
+            dbCherenkov_pmtMaxpe = round(maxQ*100./qPE)
+            #print "distance", len(distances), "pmtid", len(pmt_id)
             for jj in range(1, rangePMT):
                 # if (portions[jj]>30 and distances[jj]>700) or (portions[jj]>60 and distances[jj]>900):
                 # if (portions[jj]>35 and distances[jj]>700):# or (portions[jj]>25 and distances[jj]>900):
-            	# **qPE** is the qPE of the event
+                # **qPE** is the qPE of the event
                 ## if (portions[jj]>30 and distances[jj]>600) and (round(charge[0]*100./qPE)>7):
-                if distances[jj]>600:
-                    remove_event = True
+                if dbCherenkov_pmtMaxpe<7:
                     break
+                if portionsTemp[jj]<fportionCut:
+                    continue 
+                else:
+                  if distanceTemp[jj]>fdistCut: ## for all PMT distances
+                      is_dbCherenkov_like = True
+                      record1stPMTid = pmtidSorted[0]
+                      record2ndPMTid = pmtidSorted[jj]
+                      dist_temp = distances[jj-1]
+                      break
+                  else:
+                      continue
             ################################################################################################################################################
             check = 0
-            if remove_event == True:
+            if is_dbCherenkov_like == True:
                 eventIDToRemove.append(eventID)
-                check = 1
-
-            ### Fill the tree
-            runIDval[0] = DS.GetRunID(); 
-            subrunIDval[0] = DS.GetSubrunID();
-            evtID[0] = eventID
-
-            ### Event Reconstruction MB likelihood valid
-            try:
-                posx = EV.mblikelihood.GetPosition().X(); posy = EV.mblikelihood.GetPosition().Y(); posz = EV.mblikelihood.GetPosition().Z();
-            except:
-                posx = -9999; posy = -9999; posz = -9999;
-
-            evtx[0] = posx; evty[0] = posy; evtz[0] = posz;
-            
-            nSCBayesVal[0] = CAL.GetNSCBayes()
-            rprompt60BayesVal[0] = EV.GetRprompt60Bayes()
-            qpe = CAL.GetQPE()
-            qpeVal[0] = qpe
-            fpromptVal[0] = CAL.GetFprompt()
+                check = 1           
             checkTagVal[0] = check
-            fmaxpeVal[0] = EV.GetFmaxpe()
-            nhitVal[0] = int(ord(CAL.GetLateNhit()))
-
             ## Fred Schuckman cuts
             qTopRing = EV.GetChargeTopRing(); qSecondRing = EV.GetChargeSecondRing();
             qBotRing = EV.GetChargeBottomRing(); qSecondBotRing = EV.GetChargeSecondBottomRing(); qThirdBotRing = EV.GetChargeThirdBottomRing();
             ### for liquid level, just save values, for further cuts!!!
-            pulseindexfirstgarVal[0] =EV.pulseindexfirstgar
-            cft2r[0] = (qTopRing + qSecondRing)/qpe
-            cfb3r[0] = (qBotRing + qSecondBotRing + qThirdBotRing)/qpe
+            pulseindexfirstgarVal[0] = EV.pulseindexfirstgar
+            cft2r[0] = (qTopRing + qSecondRing)/qPE
+            cfb3r[0] = (qBotRing + qSecondBotRing + qThirdBotRing)/qPE
             neckVetoVal[0] = CAL.GetNeckVetoPMTCount() 
-            pmtFmaxpeVal[0] = charge[0]*100./qpe
+            pmtFmaxpeVal[0] = dbCherenkov_pmtMaxpe
 
             #print eventID, checkROI, nSCBayesVal[0], rprompt60BayesVal[0], qpeVal[0], fpromptVal[0]
             tree1.Fill()
-            if eventID == int(check_eventID):
-                break
+            #if eventID == int(check_eventID):
+            #    break
 
 fout.cd()
 tree1.Write()
