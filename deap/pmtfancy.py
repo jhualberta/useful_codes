@@ -1,13 +1,12 @@
 #!/usr/bin/python
 import os,sys
-from math import pi, acos
-import numpy as np
+from math import pi,acos
 import ROOT
 
 pmt_radius = 85.1
 lg_radius = 9.5
 
-pmtpos = './Aksel_PMTpos_260.ratdb'
+pmtpos = '/home/sina/Apps/ratcage/rat/data/DEAP-3600/Aksel_PMTpos_260.ratdb'
 if not os.path.isfile(pmtpos):
     print 'ERROR: need Aksel_PMTpos_260.ratdb to work'
     print 'INFO: inside TH2DPMTfancy.py, edit the variable pmtpos to the right place'
@@ -81,26 +80,28 @@ class TH2DPMTfancy:
         # self.h.SetMarkerColor(2)
         self.h.Draw(dopt)
 
-## Jie: NOTE: run the code below first to create test.root, then run the next __main__
-#if __name__=='__main__':
-#    h = TH2DPMTfancy('h','test', 500)
-#    # h = TH2DPMTfancy('h','test', 150)
-#    myda = [x+1 for x in range(255)]
-#    #uncomment to load 1d histogram with 255 bins from input file
-#    #ipf = ROOT.TFile(ipfn)
-#    #h_inputdata = ipf.Get('histogram_name')
-#    #myda = [h_inputdata.GetBinContent(ibin+1) for ibin in range(255)]
-#    Canvas = ROOT.TCanvas ("Canvas", "Canvas", 1200, 1000);           Canvas.SetTickx(1);          Canvas.SetTicky(1);     Canvas.SetLogz(1);    Canvas.SetLogy(0);   Canvas.SetGrid(0,0)
-#    h.Fill(myda)
-#    h.Draw('CONT0');     Canvas.SaveAs("test0.png"); Canvas.Clear()
-#    h.Draw('CONT1');     Canvas.SaveAs("test1.png"); Canvas.Clear()
-#    h.Draw('CONT2');     Canvas.SaveAs("test2.png"); Canvas.Clear()
-#    h.Draw('CONT3');     Canvas.SaveAs("test3.png"); Canvas.Clear()
-#    h.Draw('CONT4');     Canvas.SaveAs("test4.png"); Canvas.Clear()
-#    # h.Draw('SURF2');     Canvas.SaveAs("test.png"); Canvas.Clear()
-#    # au = raw_input('>')
-#    Canvas.Close()
+# if __name__=='__main__':
+#     h = TH2DPMTfancy('h','test', 500)
+#     # h = TH2DPMTfancy('h','test', 150)
+#     myda = [x+1 for x in range(255)]
+#     #uncomment to load 1d histogram with 255 bins from input file
+#     #ipf = ROOT.TFile(ipfn)
+#     #h_inputdata = ipf.Get('histogram_name')
+#     #myda = [h_inputdata.GetBinContent(ibin+1) for ibin in range(255)]
+#     Canvas = ROOT.TCanvas ("Canvas", "Canvas", 1200, 1000);           Canvas.SetTickx(1);          Canvas.SetTicky(1);     Canvas.SetLogz(1);    Canvas.SetLogy(0);   Canvas.SetGrid(0,0)
 
+#     h.Fill(myda)
+#     h.Draw('CONT0');     Canvas.SaveAs("test0.png"); Canvas.Clear()
+#     h.Draw('CONT1');     Canvas.SaveAs("test1.png"); Canvas.Clear()
+#     h.Draw('CONT2');     Canvas.SaveAs("test2.png"); Canvas.Clear()
+#     h.Draw('CONT3');     Canvas.SaveAs("test3.png"); Canvas.Clear()
+#     h.Draw('CONT4');     Canvas.SaveAs("test4.png"); Canvas.Clear()
+#     # h.Draw('SURF2');     Canvas.SaveAs("test.png"); Canvas.Clear()
+#     # au = raw_input('>')
+
+#     Canvas.Close()
+
+import numpy as np
 if __name__=='__main__':
 
     fin = ROOT.TFile("test.root")
@@ -112,8 +113,8 @@ if __name__=='__main__':
     h.GetXaxis().CenterTitle(0)
     h.SetTitle('')
 
-    Canvas = ROOT.TCanvas ("Canvas", "Canvas", 1400, 1000);Canvas.SetLogz(1);Canvas.SetLogy(0);Canvas.SetGrid(0,0)
-    Canvas.SetTickx(1);Canvas.SetTicky(0); 
+    Canvas = ROOT.TCanvas ("Canvas", "Canvas", 1400, 1000);          Canvas.SetLogz(1);    Canvas.SetLogy(0);   Canvas.SetGrid(0,0)
+    Canvas.SetTickx(1);          Canvas.SetTicky(0); 
     # for pmtid in range(255):
     # h.Draw('CONT0');     Canvas.SaveAs("test0.png"); Canvas.Clear()
     # h.Draw('CONT1');     Canvas.SaveAs("test1.png"); Canvas.Clear()
@@ -142,7 +143,7 @@ if __name__=='__main__':
     phis, costhetas = [-1.9, -0.63, 0.62, 1.9, 3.10, -2.5, -1.25, 0, 1.25, 2.5, -0.5], [0.45]*5+[-0.45]*5 + [-1.05]
     for i in range(11):
         phi, costheta = phis[i], costhetas[i]
-        Tl = ROOT.TLatex()
+        Tl = ROOT.TLatex ()
         Tl.SetTextAlign(22)
         Tl.SetTextSize(0.04)
         Tl.DrawLatex(phi, costheta, '#color[2]{'+str(i)+'}')
