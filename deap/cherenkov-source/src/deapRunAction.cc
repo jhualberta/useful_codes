@@ -35,19 +35,23 @@ deapRunAction::deapRunAction()
   G4RunManager::GetRunManager()->SetPrintProgress(1000);
   //Instantiate analysis manager
   //
-  //auto analysisManager = G4AnalysisManager::Instance(); //using ROOT
-  //analysisManager->SetVerboseLevel( 1 );
-  //analysisManager->SetNtupleMerging( 1 );
-  //analysisManager->CreateNtuple("T", "T");
-  //analysisManager->CreateNtupleDColumn("EdepHit0");
-  //analysisManager->FinishNtuple(); 
+  auto analysisManager = G4AnalysisManager::Instance(); //using ROOT
+  analysisManager->SetVerboseLevel( 1 );
+  analysisManager->SetNtupleMerging( 1 );
+  analysisManager->CreateNtuple("T", "T");
+  analysisManager->CreateNtupleDColumn("trackID");
+  analysisManager->CreateNtupleDColumn("stepLength");
+  analysisManager->CreateNtupleDColumn("edep");
+  analysisManager->CreateNtupleDColumn("position");
+
+  analysisManager->FinishNtuple();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 deapRunAction::~deapRunAction()
 {
-  //delete G4AnalysisManager::Instance();
+  delete G4AnalysisManager::Instance();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -62,8 +66,9 @@ void deapRunAction::BeginOfRunAction(const G4Run*)
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   //Inform G4AnalysisManager of output file
   //
-  //auto analysisManager = G4AnalysisManager::Instance();
-  //analysisManager->OpenFile( "outCheren" );
+  auto analysisManager = G4AnalysisManager::Instance();
+  G4String fileName = "outCheren";
+  analysisManager->OpenFile(fileName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -132,9 +137,9 @@ void deapRunAction::EndOfRunAction(const G4Run* run)
   //Inform G4AnalysisManager its time to end
   //
 */
-  //auto analysisManager = G4AnalysisManager::Instance();
-  //analysisManager->Write();
-  //analysisManager->CloseFile();
+  auto analysisManager = G4AnalysisManager::Instance();
+  analysisManager->Write();
+  analysisManager->CloseFile();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

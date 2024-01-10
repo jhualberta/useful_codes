@@ -46,7 +46,7 @@ void deapEventAction::EndOfEventAction(const G4Event* event)
   G4int n_trajectories = 0;
   if (trajectoryContainer) n_trajectories = trajectoryContainer->entries();
 
-  // periodic printing
+  /// periodic printing
 
   G4int eventID = event->GetEventID();
   if ( eventID < 100 || eventID % 100 == 0) {
@@ -60,17 +60,29 @@ void deapEventAction::EndOfEventAction(const G4Event* event)
            << hc->GetSize() << " hits stored in this event" << G4endl;
   }
 
-// added to save root file
-// auto evthc = static_cast<deapTrackerHitsCollection*>(event->GetHCofThisEvent()->GetHC(0));
-// auto analysisManager = G4AnalysisManager::Instance();
-////G4double EdepHit0 = (*evthc)[0]->GetEdep();
-// //G4cout<< EdepHit0 <<G4endl;
-// G4double EdepHit0 = 0.;
-// if (evthc->GetSize() != 0){
-//    EdepHit0 = (*evthc)[0]->GetEdep();
-//    G4cout<< EdepHit0 <<G4endl;
-// }
-// analysisManager->FillNtupleDColumn(0, EdepHit0);
-// analysisManager->AddNtupleRow();
+/// added to save root file
+  auto evthc = static_cast<deapTrackerHitsCollection*>(event->GetHCofThisEvent()->GetHC(0));
+  auto analysisManager = G4AnalysisManager::Instance();
+  G4int         ftrackID;
+  G4double      fstepLength;
+  G4double      fedep;
+  G4ThreeVector fpos;
+
+  //G4double EdepHit0 = 0.0;
+  if (evthc->GetSize() != 0){
+     ftrackId = (*evthc)[0]->GetTrackID();
+     fstepLength = (*evthc)[0]->GetStepLength();
+     fedep = (*evthc)[0]->GetEdep();
+     fpos  = (*evthc)[0]->GetPos();
+     G4cout<< EdepHit0 <<G4endl;
+  }
+
+//fTrackID, Edep, StepLength, Pos
+  // fill ntuple
+  analysisManager->FillNtupleDColumn(0, ftrackID);
+  analysisManager->FillNtupleDColumn(1, fstepLength);
+  analysisManager->FillNtupleDColumn(2, fedep);
+  analysisManager->FillNtupleDColumn(3, fpos);
+  analysisManager->AddNtupleRow();
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
