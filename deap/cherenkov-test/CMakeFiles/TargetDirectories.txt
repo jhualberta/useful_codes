@@ -1,0 +1,8 @@
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/testCheren.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/B1.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/edit_cache.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/rebuild_cache.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/list_install_components.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/install.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/install/local.dir
+/home/vphys/MyGithub/g4project/cherenkov-test/CMakeFiles/install/strip.dir
